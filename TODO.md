@@ -1,0 +1,4 @@
+- [x] The sole users Grace (age 7) and Charlie (age 4) are very young and have a hard time using a computer mouse. We should ensure the site is entirely navegable by keyboard and intuitive enough that a child can easily operate it.
+- [x] The reading game is kind of silly. It shows a picture of a letter, and then asks you to choose that letter from an option of other letters. Kinda pointless. Let's think up a better reading game. Still age appropriate.
+- [x] Come up with some other game ideas. Write them in a IDEAS.md in the project root.
+- [x] Grace wants her typing game to show meteors going down rather than balloons going up.

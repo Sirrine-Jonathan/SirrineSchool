@@ -14,7 +14,9 @@ const DashboardContainer = styled.div<{ $theme: string }>`
   background: ${props => props.$theme === 'space_princess' ? '#0f0c29' : '#1a1a1a'};
   color: white;
   height: 100%;
+  width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 1.5rem 2rem;
@@ -26,8 +28,9 @@ const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   gap: 0.5rem;
+  width: 100%;
 
   @media (min-width: 768px) {
     margin-bottom: 2rem;
@@ -74,9 +77,9 @@ const SubjectGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-  max-width: 1200px;
-  margin: auto 0;
   width: 100%;
+  flex: 1;
+  align-content: stretch;
 
   @media (min-width: 480px) {
     grid-template-columns: 1fr 1fr;
@@ -85,7 +88,9 @@ const SubjectGrid = styled.div`
   @media (min-width: 768px) {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
+    align-content: center;
     margin: auto;
+    max-width: 1200px;
   }
 `;
 
@@ -93,7 +98,7 @@ const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
   background: ${props => props.$active ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
   border: 4px solid ${props => props.$active ? props.$color : 'transparent'};
   border-radius: 20px;
-  padding: 1.5rem;
+  padding: 1.2rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -103,6 +108,7 @@ const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
   transition: all 0.3s ease;
   cursor: pointer;
   width: 100%;
+  min-height: 80px;
   transform: ${props => props.$active ? 'translateY(-3px)' : 'none'};
   box-shadow: ${props => props.$active ? `0 5px 15px rgba(0,0,0,0.3), 0 0 10px ${props.$color}` : 'none'};
 
@@ -112,6 +118,7 @@ const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
     border-radius: 24px;
     padding: 3rem 2rem;
     gap: 1.5rem;
+    min-height: auto;
     transform: ${props => props.$active ? 'translateY(-10px)' : 'none'};
     box-shadow: ${props => props.$active ? `0 10px 20px rgba(0,0,0,0.3), 0 0 15px ${props.$color}` : 'none'};
   }

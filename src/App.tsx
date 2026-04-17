@@ -10,9 +10,11 @@ import AstroTyper from './games/typing/AstroTyper';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 
 const AppContainer = styled.div`
-  min-height: 100vh;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 const AppRoutes = () => {

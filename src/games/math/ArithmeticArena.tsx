@@ -12,7 +12,9 @@ const GameArea = styled.div`
   justify-content: center;
   padding: 1rem;
   height: 100%;
+  width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 1rem;

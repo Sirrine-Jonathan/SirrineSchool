@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications alt+T"
+  - generic [ref=e5]:
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - button "HOME" [ref=e8] [cursor=pointer]:
+          - img [ref=e9]
+          - generic [ref=e12]: HOME
+        - button "ARCADE" [ref=e13] [cursor=pointer]:
+          - img [ref=e14]
+          - generic [ref=e17]: ARCADE
+      - generic [ref=e18]:
+        - button "Report Bug" [ref=e19] [cursor=pointer]:
+          - img [ref=e20]
+          - generic [ref=e29]: REPORT
+        - button "LOGIN" [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+          - generic [ref=e36]: LOGIN
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - heading "ROBITS" [level=1] [ref=e39]
+        - paragraph [ref=e40]: Tactical Programming Combat
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - img [ref=e44]
+            - heading "The Premise" [level=2] [ref=e48]
+          - paragraph [ref=e49]: In the neon-drenched arenas of the future, Operators command advanced ROBITS. Success requires more than just firepower—you must program your machine's entire sequence of moves before seeing what your opponents have planned.
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - img [ref=e52]
+            - heading "Core Gameplay" [level=2] [ref=e54]
+          - paragraph [ref=e55]: Queue up 7 commands—Move, Turn, or Stay. Watch as the field transforms! Navigate treacherous Hazards like Conveyors, Warps, and Scramblers. Be the first to collect 10 credits to claim victory.
+      - generic [ref=e56]:
+        - heading "System Features" [level=3] [ref=e57]
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - img [ref=e60]
+            - generic [ref=e63]: Arcade Mode
+            - paragraph [ref=e64]: Test your programs against high-level AI bots.
+          - generic [ref=e65]:
+            - img [ref=e66]
+            - generic [ref=e71]: Multiplayer
+            - paragraph [ref=e72]: Battle up to 10 human operators in real-time matches.
+          - generic [ref=e73]:
+            - img [ref=e74]
+            - generic [ref=e76]: Async Turns
+            - paragraph [ref=e77]: Lock in your moves when you're ready. 24h turn window.
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e80]: Combatant Density
+          - generic [ref=e81]:
+            - button "1" [ref=e82] [cursor=pointer]
+            - button "3" [ref=e83] [cursor=pointer]
+            - button "5" [ref=e84] [cursor=pointer]
+            - button "9" [ref=e85] [cursor=pointer]
+            - spinbutton [ref=e87]: "3"
+          - paragraph [ref=e88]: Select number of AI opponents
+        - button "INITIALIZE ARCADE MODE" [ref=e89] [cursor=pointer]
+        - generic [ref=e90]:
+          - link "Access Tactical Manual" [ref=e91] [cursor=pointer]:
+            - /url: /about
+            - img [ref=e92]
+            - text: Access Tactical Manual
+          - button "Report Issue" [ref=e94] [cursor=pointer]:
+            - img [ref=e95]
+            - text: Report Issue
+```

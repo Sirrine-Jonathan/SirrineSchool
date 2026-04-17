@@ -8,10 +8,11 @@ const HomeContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 1rem;
   height: 100%;
   width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 2rem;
@@ -20,8 +21,8 @@ const HomeContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
   color: #646cff;
   text-align: center;
 
@@ -34,14 +35,18 @@ const Title = styled.h1`
 const UserGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
+  flex: 1;
+  align-content: stretch;
   max-width: 400px;
 
   @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;
     max-width: 800px;
     gap: 2rem;
+    flex: none;
+    align-content: center;
   }
 `;
 
@@ -50,8 +55,8 @@ const UserCard = styled.button<{ $theme: 'space_princess' | 'monster_skate', $ac
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  gap: 1.5rem;
+  padding: 1.2rem;
+  gap: 1rem;
   border-radius: 24px;
   border: 4px solid ${props => props.$active ? (props.$theme === 'space_princess' ? '#e94560' : '#f39c12') : 'transparent'};
   background: ${props => props.$theme === 'space_princess' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)'};
@@ -61,11 +66,14 @@ const UserCard = styled.button<{ $theme: 'space_princess' | 'monster_skate', $ac
   box-shadow: ${props => props.$active ? `0 0 20px ${props.$theme === 'space_princess' ? '#e94560' : '#f39c12'}` : 'none'};
   transform: ${props => props.$active ? 'scale(1.02)' : 'scale(1)'};
   width: 100%;
+  flex: 1;
+  min-height: 100px;
 
   @media (min-width: 768px) {
     flex-direction: column;
     padding: 2.5rem;
     gap: 1rem;
+    min-height: auto;
     transform: ${props => props.$active ? 'scale(1.05)' : 'scale(1)'};
   }
 

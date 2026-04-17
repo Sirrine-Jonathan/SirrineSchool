@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "playwright test",
-    "start": "serve -s dist -p $PORT",
+    "start": "serve -s dist",
     "host": "vite --host"
   },
   "dependencies": {

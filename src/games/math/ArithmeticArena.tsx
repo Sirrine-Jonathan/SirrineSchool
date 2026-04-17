@@ -232,11 +232,17 @@ const ArithmeticArena: React.FC = () => {
             <span>=</span>
             <AnswerInput
               ref={inputRef}
-              type="number"
+              type="text"
+              inputMode="none"
               value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
+              onChange={(e) => {
+                // Allow only numbers if typed from physical keyboard
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setUserAnswer(val);
+              }}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               placeholder="?"
+              autoFocus
             />
           </Equation>
 

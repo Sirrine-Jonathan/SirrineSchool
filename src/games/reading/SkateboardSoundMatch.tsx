@@ -14,27 +14,32 @@ const GameArea = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0.5rem;
-  overflow: hidden;
+  width: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 2rem;
+    overflow: hidden;
   }
 `;
 
 const TargetBox = styled.div`
   background: #333;
-  padding: 1rem;
-  border-radius: 20px;
+  padding: 1.5rem;
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  border: 3px solid #f39c12;
-  box-shadow: 0 4px 0 #d35400;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 4px solid #f39c12;
+  box-shadow: 0 5px 0 #d35400;
   cursor: pointer;
   transition: transform 0.1s;
+  width: 100%;
+  max-width: 300px;
 
   @media (min-width: 768px) {
     padding: 3rem;
@@ -43,6 +48,8 @@ const TargetBox = styled.div`
     margin-bottom: 3rem;
     border-width: 4px;
     box-shadow: 0 10px 0 #d35400;
+    max-width: none;
+    width: auto;
   }
 
   &:active {
@@ -56,8 +63,8 @@ const TargetBox = styled.div`
   }
 
   svg {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
 
     @media (min-width: 768px) {
       width: 120px;
@@ -66,7 +73,7 @@ const TargetBox = styled.div`
   }
 
   p {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     @media (min-width: 768px) {
       font-size: 1.2rem;
     }
@@ -75,10 +82,14 @@ const TargetBox = styled.div`
 
 const WordGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
+
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   @media (min-width: 768px) {
     gap: 2rem;
@@ -87,26 +98,35 @@ const WordGrid = styled.div`
 `;
 
 const WordButton = styled.button<{ $active?: boolean }>`
-  font-size: 1.1rem;
-  padding: 0.75rem;
+  font-size: 1.2rem;
+  padding: 0.8rem;
   background: ${props => props.$active ? '#f39c12' : '#2c3e50'};
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: ${props => props.$active ? '0 3px 0 #d35400' : '0 3px 0 #1a252f'};
+  box-shadow: ${props => props.$active ? '0 4px 0 #d35400' : '0 4px 0 #1a252f'};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 
   @media (min-width: 768px) {
     font-size: 2rem;
     padding: 2rem;
     border-radius: 20px;
     box-shadow: ${props => props.$active ? '0 8px 0 #d35400' : '0 8px 0 #1a252f'};
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    @media (min-width: 768px) {
+      width: 64px;
+      height: 64px;
+    }
   }
 
   &:hover {
@@ -247,9 +267,12 @@ const SkateboardWordMatch: React.FC = () => {
       <GameArea>
         <TargetBox onClick={() => speak(target.word)}>
           <target.icon color="#f39c12" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Volume2 size={24} color="#f39c12" />
-            <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem' }}>Find the word!</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Volume2 size={24} color="#f39c12" />
+              <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem' }}>{target.word}</p>
+            </div>
+            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem' }}>Match the word!</p>
           </div>
         </TargetBox>
 
@@ -260,6 +283,7 @@ const SkateboardWordMatch: React.FC = () => {
               $active={selectedIndex === index}
               onClick={() => handleChoice(item.word)}
             >
+              <item.icon />
               {item.word}
               <Shortcut>({index + 1})</Shortcut>
             </WordButton>

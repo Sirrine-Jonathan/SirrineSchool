@@ -11,42 +11,61 @@ const GameArea = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0.5rem;
-  overflow: hidden;
+  width: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 2rem;
+    overflow: hidden;
   }
 `;
 
-const TruckGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+const TruckGrid = styled.div<{ $count: number }>`
+  display: grid;
+  grid-template-columns: ${props => {
+    if (props.$count <= 4) return 'repeat(2, 1fr)';
+    if (props.$count <= 6) return 'repeat(3, 1fr)';
+    return 'repeat(5, 1fr)';
+  }};
   gap: 0.5rem;
-  margin-bottom: 1rem;
-  max-width: 800px;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
 
   @media (min-width: 768px) {
+    grid-template-columns: ${props => {
+      if (props.$count <= 5) return `repeat(${props.$count}, 1fr)`;
+      return 'repeat(5, 1fr)';
+    }};
     gap: 2rem;
     margin-bottom: 4rem;
+    flex: none;
   }
 `;
 
 const AnswerGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.4rem;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 1rem;
 
   @media (min-width: 768px) {
     gap: 1rem;
+    margin-bottom: 0;
   }
 `;
 
 const NumberButton = styled.button<{ $active?: boolean }>`
-  font-size: 1.2rem;
-  width: 50px;
-  height: 50px;
+  font-size: 1.4rem;
+  width: 100%;
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,9 +73,9 @@ const NumberButton = styled.button<{ $active?: boolean }>`
   background: ${props => props.$active ? '#e67e22' : '#f39c12'};
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: ${props => props.$active ? '0 1px 0 #d35400' : '0 3px 0 #d35400'};
+  box-shadow: ${props => props.$active ? '0 1px 0 #d35400' : '0 4px 0 #d35400'};
   transform: ${props => props.$active ? 'translateY(2px)' : 'none'};
   transition: all 0.1s;
 
@@ -79,14 +98,14 @@ const NumberButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
-const TruckWrapper = styled(motion.div)`
+const TruckWrapper = styled(motion.div)<{ $count: number }>`
   svg {
-    width: 40px;
-    height: 40px;
+    width: ${props => props.$count > 6 ? '50px' : '70px'};
+    height: ${props => props.$count > 6 ? '50px' : '70px'};
 
     @media (min-width: 768px) {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
     }
   }
 `;
@@ -197,10 +216,11 @@ const MonsterTruckCount: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <TruckGrid>
+        <TruckGrid $count={targetCount}>
           {Array.from({ length: targetCount }).map((_, i) => (
             <TruckWrapper
               key={`${targetCount}-${i}`}
+              $count={targetCount}
               initial={{ scale: 0, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}

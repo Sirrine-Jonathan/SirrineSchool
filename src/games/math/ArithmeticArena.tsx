@@ -10,40 +10,47 @@ const GameArea = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 1rem;
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 768px) {
     padding: 1rem;
+    overflow: hidden;
   }
 `;
 
 const ProblemCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 1rem;
+  border-radius: 24px;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   border: 2px solid rgba(255, 255, 255, 0.1);
+  margin: auto 0;
 
   @media (min-width: 768px) {
     border-radius: 30px;
     padding: 2rem;
     gap: 1.5rem;
+    margin: 0;
   }
 `;
 
 const Equation = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.8rem;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 2.2rem;
   font-weight: bold;
+  width: 100%;
 
   @media (min-width: 768px) {
     gap: 1rem;
@@ -53,12 +60,12 @@ const Equation = styled.div`
 
 const NumberBox = styled.div<{ $color: string }>`
   background: ${props => props.$color};
-  width: 45px;
-  height: 45px;
+  width: 55px;
+  height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 14px;
   color: white;
   box-shadow: 0 3px 0 rgba(0,0,0,0.2);
 
@@ -74,8 +81,8 @@ const VisualAid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.2rem;
-  min-height: 20px;
+  gap: 0.3rem;
+  min-height: 30px;
   max-width: 100%;
 
   @media (min-width: 768px) {
@@ -84,8 +91,8 @@ const VisualAid = styled.div`
   }
 
   svg {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     @media (min-width: 768px) {
       width: 20px;
       height: 20px;
@@ -94,10 +101,10 @@ const VisualAid = styled.div`
 `;
 
 const AnswerInput = styled.input`
-  width: 60px;
-  font-size: 1.5rem;
-  padding: 0.3rem;
-  border-radius: 10px;
+  width: 70px;
+  font-size: 2rem;
+  padding: 0.4rem;
+  border-radius: 12px;
   border: 3px solid #646cff;
   background: #1a1a1a;
   color: white;
@@ -118,10 +125,9 @@ const AnswerInput = styled.input`
 const Keypad = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.4rem;
-  margin-top: 0.5rem;
+  gap: 0.6rem;
+  margin-top: 1rem;
   width: 100%;
-  max-width: 350px;
 
   @media (min-width: 768px) {
     gap: 0.6rem;
@@ -130,14 +136,17 @@ const Keypad = styled.div`
 `;
 
 const Key = styled.button`
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 0.6rem;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 0.8rem 0.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @media (min-width: 768px) {
     padding: 0.8rem;
@@ -223,11 +232,17 @@ const ArithmeticArena: React.FC = () => {
             <span>=</span>
             <AnswerInput
               ref={inputRef}
-              type="number"
+              type="text"
+              inputMode="none"
               value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
+              onChange={(e) => {
+                // Allow only numbers if typed from physical keyboard
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setUserAnswer(val);
+              }}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               placeholder="?"
+              autoFocus
             />
           </Equation>
 

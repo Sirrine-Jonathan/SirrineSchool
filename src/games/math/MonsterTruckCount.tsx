@@ -11,11 +11,12 @@ const GameArea = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0.5rem;
-  overflow: hidden;
+  padding: 1rem;
+  overflow-y: auto;
 
   @media (min-width: 768px) {
     padding: 2rem;
+    overflow: hidden;
   }
 `;
 
@@ -23,30 +24,37 @@ const TruckGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
   max-width: 800px;
+  flex: 1;
+  align-content: center;
 
   @media (min-width: 768px) {
     gap: 2rem;
     margin-bottom: 4rem;
+    flex: none;
   }
 `;
 
 const AnswerGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.4rem;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 1rem;
 
   @media (min-width: 768px) {
     gap: 1rem;
+    margin-bottom: 0;
   }
 `;
 
 const NumberButton = styled.button<{ $active?: boolean }>`
-  font-size: 1.2rem;
-  width: 50px;
-  height: 50px;
+  font-size: 1.4rem;
+  width: 100%;
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,9 +62,9 @@ const NumberButton = styled.button<{ $active?: boolean }>`
   background: ${props => props.$active ? '#e67e22' : '#f39c12'};
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: ${props => props.$active ? '0 1px 0 #d35400' : '0 3px 0 #d35400'};
+  box-shadow: ${props => props.$active ? '0 1px 0 #d35400' : '0 4px 0 #d35400'};
   transform: ${props => props.$active ? 'translateY(2px)' : 'none'};
   transition: all 0.1s;
 
@@ -81,8 +89,8 @@ const NumberButton = styled.button<{ $active?: boolean }>`
 
 const TruckWrapper = styled(motion.div)`
   svg {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 
     @media (min-width: 768px) {
       width: 80px;

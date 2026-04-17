@@ -10,20 +10,22 @@ const GameArea = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 1rem;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
 
   @media (min-width: 768px) {
     padding: 1rem;
+    overflow: hidden;
   }
 `;
 
 const ProblemText = styled.h2`
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
   color: #e94560;
   text-align: center;
+  max-width: 600px;
 
   @media (min-width: 768px) {
     font-size: 1.8rem;
@@ -34,8 +36,8 @@ const ProblemText = styled.h2`
 const CrateGrid = styled.div`
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
 
   @media (min-width: 768px) {
@@ -45,15 +47,15 @@ const CrateGrid = styled.div`
 `;
 
 const Crate = styled(motion.div)`
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   background: rgba(255, 255, 255, 0.1);
   border: 2px dashed #666;
-  border-radius: 8px;
+  border-radius: 12px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 4px;
+  gap: 4px;
+  padding: 6px;
   align-items: center;
   justify-items: center;
 
@@ -66,8 +68,8 @@ const Crate = styled(motion.div)`
   }
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
 
     @media (min-width: 768px) {
       width: 20px;
@@ -78,18 +80,18 @@ const Crate = styled(motion.div)`
 
 const InputArea = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   align-items: center;
   width: 100%;
   justify-content: center;
 `;
 
 const NumberInput = styled.input`
-  width: 60px;
-  font-size: 1.2rem;
-  padding: 0.3rem;
-  border-radius: 8px;
-  border: 2px solid #e94560;
+  width: 70px;
+  font-size: 1.8rem;
+  padding: 0.4rem;
+  border-radius: 12px;
+  border: 3px solid #e94560;
   background: #1a1a2e;
   color: white;
   text-align: center;
@@ -104,12 +106,15 @@ const NumberInput = styled.input`
 const SubmitButton = styled.button`
   background: #e94560;
   color: white;
-  font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   @media (min-width: 768px) {
     font-size: 1.3rem;
@@ -129,20 +134,23 @@ const SubmitButton = styled.button`
 const Keypad = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.4rem;
-  margin-top: 1rem;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
 `;
 
 const Key = styled.button`
   background: #2c3e50;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.5rem;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 0.8rem 0.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @media (min-width: 768px) {
     padding: 0.8rem;

@@ -31,7 +31,10 @@ test.describe('Sirrine School Keyboard Navigation', () => {
     await expect(page.getByText('Hello, Grace!')).toBeVisible({ timeout: 10000 });
 
     await page.waitForTimeout(500);
-    // Default selection is Math (index 0). Press ArrowRight to move to Reading.
+    // Default selection is Math (index 0). 
+    // For Grace, subjects are: Math, Arithmetic, Reading, Typing.
+    // Press ArrowRight twice to move to Reading.
+    await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/.*reading/, { timeout: 10000 });

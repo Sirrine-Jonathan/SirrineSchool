@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import MonsterTruckCount from './games/math/MonsterTruckCount';
 import SpaceMissionSupplies from './games/math/SpaceMissionSupplies';
+import ArithmeticArena from './games/math/ArithmeticArena';
 import AstroTyper from './games/typing/AstroTyper';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 
@@ -34,6 +35,10 @@ const AppRoutes = () => {
       <Route 
         path="/math/grace" 
         element={currentUser ? <SpaceMissionSupplies /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/math/arithmetic" 
+        element={currentUser ? <ArithmeticArena /> : <Navigate to="/" />} 
       />
       <Route 
         path="/typing" 

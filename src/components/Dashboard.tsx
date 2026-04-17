@@ -9,81 +9,153 @@ const DashboardContainer = styled.div<{ $theme: string }>`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 0.5rem;
   background: ${props => props.$theme === 'space_princess' ? '#0f0c29' : '#1a1a1a'};
   color: white;
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 2rem;
+  }
 `;
 
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
+  }
 `;
 
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+
+  @media (min-width: 768px) {
+    gap: 1rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0;
+    @media (min-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
 `;
 
 const XPBadge = styled.div`
   background: #ffd700;
   color: #000;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 20px;
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+
+  @media (min-width: 768px) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
 `;
 
 const SubjectGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
   width: 100%;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
 `;
 
 const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
   background: ${props => props.$active ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
   border: 4px solid ${props => props.$active ? props.$color : 'transparent'};
-  border-radius: 24px;
-  padding: 3rem 2rem;
+  border-radius: 16px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
+  gap: 0.5rem;
   color: white;
   transition: all 0.3s ease;
   cursor: pointer;
   width: 100%;
-  transform: ${props => props.$active ? 'translateY(-10px)' : 'none'};
-  box-shadow: ${props => props.$active ? `0 10px 20px rgba(0,0,0,0.3), 0 0 15px ${props.$color}` : 'none'};
+  transform: ${props => props.$active ? 'translateY(-3px)' : 'none'};
+  box-shadow: ${props => props.$active ? `0 5px 15px rgba(0,0,0,0.3), 0 0 10px ${props.$color}` : 'none'};
+
+  @media (min-width: 768px) {
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    gap: 1.5rem;
+    transform: ${props => props.$active ? 'translateY(-10px)' : 'none'};
+    box-shadow: ${props => props.$active ? `0 10px 20px rgba(0,0,0,0.3), 0 0 15px ${props.$color}` : 'none'};
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: ${props => props.$color};
-    transform: translateY(-10px);
+    transform: translateY(-3px);
+
+    @media (min-width: 768px) {
+      transform: translateY(-10px);
+    }
   }
 
   svg {
     color: ${props => props.$color};
+    width: 32px;
+    height: 32px;
+
+    @media (min-width: 768px) {
+      width: 64px;
+      height: 64px;
+    }
   }
 `;
 
 const ShortcutHint = styled.span`
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   opacity: 0.6;
-  margin-top: 0.5rem;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+    margin-top: 0.5rem;
+  }
 `;
 
 const SubjectTitle = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1rem;
   margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.8rem;
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 0.25rem;
+
+  @media (min-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const LogoutButton = styled.button`
@@ -92,9 +164,24 @@ const LogoutButton = styled.button`
   color: rgba(255, 255, 255, 0.6);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.75rem;
+  padding: 0.25rem;
+
+  .text {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    gap: 0.5rem;
+    font-size: 1rem;
+    padding: 0.6em 1.2em;
+
+    .text {
+      display: inline;
+    }
+  }
 
   &:hover {
     color: white;
@@ -110,6 +197,7 @@ const Dashboard: React.FC = () => {
 
   const subjects = [
     { id: 'math', name: 'Math', icon: Calculator, color: '#4caf50' },
+    ...(currentUser === 'grace' ? [{ id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' }] : []),
     { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
     { id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' },
   ];
@@ -118,6 +206,8 @@ const Dashboard: React.FC = () => {
     if (id === 'math') {
       if (currentUser === 'grace') navigate('/math/grace');
       else navigate('/math/charlie');
+    } else if (id === 'arithmetic') {
+      navigate('/math/arithmetic');
     } else if (id === 'reading') {
       navigate('/reading');
     } else if (id === 'typing') {
@@ -140,6 +230,8 @@ const Dashboard: React.FC = () => {
         handleAction(subjects[selectedIndex].id);
       } else if (e.key.toLowerCase() === 'm') {
         handleAction('math');
+      } else if (e.key.toLowerCase() === 'a' && currentUser === 'grace') {
+        handleAction('arithmetic');
       } else if (e.key.toLowerCase() === 'r') {
         handleAction('reading');
       } else if (e.key.toLowerCase() === 't') {
@@ -168,14 +260,14 @@ const Dashboard: React.FC = () => {
             <Award size={16} /> {user.xp} XP
           </XPBadge>
         </UserInfo>
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <ActionButtons>
           <LogoutButton onClick={() => setShowSettings(true)}>
-            <Settings size={20} /> Settings (S)
+            <Settings size={20} /> <span className="text">Settings (S)</span>
           </LogoutButton>
           <LogoutButton onClick={() => setCurrentUser(null)}>
-            <LogOut size={20} /> Switch User (Q)
+            <LogOut size={20} /> <span className="text">Switch User (Q)</span>
           </LogoutButton>
-        </div>
+        </ActionButtons>
       </Header>
 
       <SubjectGrid>

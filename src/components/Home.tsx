@@ -8,28 +8,47 @@ const HomeContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 3rem;
-  margin-bottom: 3rem;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
   color: #646cff;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+  }
 `;
 
 const UserGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 300px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    max-width: 800px;
+    gap: 2rem;
+  }
 `;
 
 const UserCard = styled.button<{ $theme: 'space_princess' | 'monster_skate', $active?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 20px;
   border: 4px solid ${props => props.$active ? (props.$theme === 'space_princess' ? '#e94560' : '#f39c12') : 'transparent'};
   background: ${props => props.$theme === 'space_princess' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)'};
@@ -37,17 +56,48 @@ const UserCard = styled.button<{ $theme: 'space_princess' | 'monster_skate', $ac
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
   box-shadow: ${props => props.$active ? `0 0 20px ${props.$theme === 'space_princess' ? '#e94560' : '#f39c12'}` : 'none'};
-  transform: ${props => props.$active ? 'scale(1.05)' : 'scale(1)'};
+  transform: ${props => props.$active ? 'scale(1.02)' : 'scale(1)'};
+  width: 100%;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+    transform: ${props => props.$active ? 'scale(1.05)' : 'scale(1)'};
+  }
 
   &:hover {
     transform: scale(1.05);
     border-color: ${props => props.$theme === 'space_princess' ? '#e94560' : '#f39c12'};
   }
+
+  svg {
+    width: 48px;
+    height: 48px;
+
+    @media (min-width: 768px) {
+      width: 64px;
+      height: 64px;
+    }
+  }
 `;
 
 const Name = styled.h2`
-  margin-top: 1rem;
-  font-size: 2rem;
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+
+  @media (min-width: 768px) {
+    margin-top: 1rem;
+    font-size: 2rem;
+  }
+`;
+
+const ShortcutHint = styled.div`
+  margin-top: 0.5rem;
+  opacity: 0.6;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
 `;
 
 const Home: React.FC = () => {
@@ -85,7 +135,7 @@ const Home: React.FC = () => {
         >
           <Rocket size={64} color="#e94560" />
           <Name>{users.grace.name}</Name>
-          <div style={{ marginTop: '0.5rem', opacity: 0.6 }}>(Press G)</div>
+          <ShortcutHint>(Press G)</ShortcutHint>
         </UserCard>
         <UserCard 
           $theme="monster_skate" 
@@ -94,7 +144,7 @@ const Home: React.FC = () => {
         >
           <Truck size={64} color="#f39c12" />
           <Name>{users.charlie.name}</Name>
-          <div style={{ marginTop: '0.5rem', opacity: 0.6 }}>(Press C)</div>
+          <ShortcutHint>(Press C)</ShortcutHint>
         </UserCard>
       </UserGrid>
     </HomeContainer>

@@ -19,12 +19,14 @@ export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     min-width: 320px;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   #root {
     width: 100%;
-    min-height: 100vh;
+    height: 100%;
     margin: 0 auto;
   }
 

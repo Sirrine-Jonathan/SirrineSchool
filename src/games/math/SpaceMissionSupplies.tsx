@@ -9,65 +9,112 @@ const GameArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  justify-content: center;
+  padding: 0.5rem;
   height: 100%;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const ProblemText = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
   color: #e94560;
   text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const CrateGrid = styled.div`
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
+
+  @media (min-width: 768px) {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
 `;
 
 const Crate = styled(motion.div)`
-  width: 150px;
-  height: 150px;
+  width: 70px;
+  height: 70px;
   background: rgba(255, 255, 255, 0.1);
-  border: 3px dashed #666;
-  border-radius: 15px;
+  border: 2px dashed #666;
+  border-radius: 8px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  padding: 10px;
+  gap: 2px;
+  padding: 4px;
   align-items: center;
   justify-items: center;
+
+  @media (min-width: 768px) {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+
+    @media (min-width: 768px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `;
 
 const InputArea = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
+  width: 100%;
+  justify-content: center;
 `;
 
 const NumberInput = styled.input`
-  width: 100px;
-  font-size: 2rem;
-  padding: 0.5rem;
-  border-radius: 10px;
+  width: 60px;
+  font-size: 1.2rem;
+  padding: 0.3rem;
+  border-radius: 8px;
   border: 2px solid #e94560;
   background: #1a1a2e;
   color: white;
   text-align: center;
+
+  @media (min-width: 768px) {
+    width: 90px;
+    font-size: 1.8rem;
+    padding: 0.4rem;
+  }
 `;
 
 const SubmitButton = styled.button`
   background: #e94560;
   color: white;
-  font-size: 1.5rem;
-  padding: 1rem 3rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
+
+  @media (min-width: 768px) {
+    font-size: 1.3rem;
+    padding: 0.8rem 2.5rem;
+  }
 
   &:hover {
     background: #ff5e78;
@@ -82,21 +129,39 @@ const SubmitButton = styled.button`
 const Keypad = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.5rem;
-  margin-top: 2rem;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 350px;
 `;
 
 const Key = styled.button`
   background: #2c3e50;
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 1rem;
-  font-size: 1.5rem;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 1rem;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    padding: 0.8rem;
+    font-size: 1.3rem;
+  }
 
   &:hover { background: #34495e; }
   &:active { background: #1a252f; }
+`;
+
+const FeedbackText = styled(motion.div)<{ $correct: boolean }>`
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  color: ${props => props.$correct ? '#4caf50' : '#f44336'};
+
+  @media (min-width: 768px) {
+    margin-top: 1.5rem;
+    font-size: 1.8rem;
+  }
 `;
 
 const SpaceMissionSupplies: React.FC = () => {
@@ -156,7 +221,7 @@ const SpaceMissionSupplies: React.FC = () => {
               transition={{ delay: i * 0.1 }}
             >
               {Array.from({ length: itemsPerCrate }).map((_, j) => (
-                <Battery key={j} size={24} color="#4caf50" />
+                <Battery key={j} color="#4caf50" />
               ))}
             </Crate>
           ))}
@@ -194,18 +259,14 @@ const SpaceMissionSupplies: React.FC = () => {
 
         <AnimatePresence>
           {feedback && (
-            <motion.div
+            <FeedbackText
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
-              style={{
-                marginTop: '2rem',
-                fontSize: '2rem',
-                color: feedback.includes('LIFT') ? '#4caf50' : '#f44336'
-              }}
+              $correct={feedback.includes('LIFT')}
             >
               {feedback}
-            </motion.div>
+            </FeedbackText>
           )}
         </AnimatePresence>
       </GameArea>

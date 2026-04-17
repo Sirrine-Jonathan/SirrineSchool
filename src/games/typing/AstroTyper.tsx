@@ -12,7 +12,7 @@ import Keyboard from '../../components/Keyboard';
 const GameArea = styled.div`
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  height: 100%;
   width: 100%;
   position: relative;
   background-color: #0b0d17;
@@ -24,12 +24,13 @@ const GameArea = styled.div`
   background-position: 0 0, 40px 60px, 130px 270px;
   border: 2px solid #333;
   overflow: hidden;
+  flex: 1;
 `;
 
 const MeteorContainer = styled(motion.div)<{ $left: number }>`
   position: absolute;
   left: ${props => props.$left}%;
-  top: -10%; /* Start just above the view */
+  top: -10%;
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -37,8 +38,8 @@ const MeteorContainer = styled(motion.div)<{ $left: number }>`
 `;
 
 const MeteorBody = styled.div<{ $color: string }>`
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   background: radial-gradient(circle at 30% 30%, ${props => props.$color}, #000);
   border-radius: 50% 40% 50% 40%;
   display: flex;
@@ -46,29 +47,44 @@ const MeteorBody = styled.div<{ $color: string }>`
   justify-content: center;
   border: 2px solid rgba(255,255,255,0.2);
   position: relative;
-  box-shadow: 0 0 20px ${props => props.$color}88;
+  box-shadow: 0 0 15px ${props => props.$color}88;
 
-  /* Tail */
+  @media (min-width: 768px) {
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 0 20px ${props => props.$color}88;
+  }
+
   &::before {
     content: '';
     position: absolute;
-    top: -40px;
+    top: -30px;
     left: 50%;
-    width: 20px;
-    height: 60px;
+    width: 15px;
+    height: 40px;
     background: linear-gradient(to bottom, transparent, ${props => props.$color}44);
     transform: translateX(-50%);
     filter: blur(4px);
+
+    @media (min-width: 768px) {
+      top: -40px;
+      width: 20px;
+      height: 60px;
+    }
   }
 `;
 
 const Letter = styled.span`
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #FFFFFF !important;
   text-shadow: 0 0 10px rgba(0,0,0,0.8);
   pointer-events: none;
   z-index: 2;
+
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const explodeAnimation = keyframes`
@@ -78,35 +94,50 @@ const explodeAnimation = keyframes`
 `;
 
 const Explosion = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #FFFFFF;
   animation: ${explodeAnimation} 0.3s ease-out forwards;
+
+  @media (min-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
 const HUD = styled.div`
   position: absolute;
-  top: 1rem;
+  top: 0.5rem;
   left: 0;
   right: 0;
-  padding: 0 2rem;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 110;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #FFF;
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+
+  @media (min-width: 768px) {
+    top: 1rem;
+    padding: 0 2rem;
+    font-size: 1.5rem;
+  }
 `;
 
 const BottomArea = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 10px;
   left: 0;
   right: 0;
   z-index: 110;
+
+  @media (min-width: 768px) {
+    bottom: 20px;
+  }
 `;
 
 const Overlay = styled.div`
@@ -122,37 +153,69 @@ const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  gap: 1.5rem;
+  gap: 1rem;
+  padding: 1rem;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    gap: 1.5rem;
+    padding: 2rem;
+  }
 `;
 
 const Title = styled.h2`
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
   color: #ffd700;
+
+  @media (min-width: 768px) {
+    font-size: 3rem;
+  }
 `;
 
 const StatText = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const ButtonRow = styled.div`
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-top: 1rem;
+  width: 100%;
+  max-width: 300px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 1rem;
+    max-width: none;
+  }
 `;
 
 const ActionButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  font-size: 1.2rem;
-  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
   background: #e94560;
   color: white;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.5rem;
+    width: auto;
+  }
 
   &:hover {
     background: #ff5e78;
@@ -165,7 +228,8 @@ const HistoryList = styled.div`
   background: rgba(255,255,255,0.1);
   padding: 1rem;
   border-radius: 10px;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
 `;
 
 const HistoryItem = styled.div`

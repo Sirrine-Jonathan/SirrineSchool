@@ -14,51 +14,100 @@ const GameArea = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 2rem;
+  padding: 0.5rem;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const TargetBox = styled.div`
   background: #333;
-  padding: 3rem;
-  border-radius: 30px;
+  padding: 1rem;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-  border: 4px solid #f39c12;
-  box-shadow: 0 10px 0 #d35400;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border: 3px solid #f39c12;
+  box-shadow: 0 4px 0 #d35400;
   cursor: pointer;
   transition: transform 0.1s;
 
+  @media (min-width: 768px) {
+    padding: 3rem;
+    border-radius: 30px;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    border-width: 4px;
+    box-shadow: 0 10px 0 #d35400;
+  }
+
   &:active {
-    transform: translateY(5px);
-    box-shadow: 0 5px 0 #d35400;
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #d35400;
+
+    @media (min-width: 768px) {
+      transform: translateY(5px);
+      box-shadow: 0 5px 0 #d35400;
+    }
+  }
+
+  svg {
+    width: 60px;
+    height: 60px;
+
+    @media (min-width: 768px) {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  p {
+    font-size: 0.9rem;
+    @media (min-width: 768px) {
+      font-size: 1.2rem;
+    }
   }
 `;
 
 const WordGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 500px;
+
+  @media (min-width: 768px) {
+    gap: 2rem;
+    max-width: 800px;
+  }
 `;
 
 const WordButton = styled.button<{ $active?: boolean }>`
-  font-size: 2rem;
-  padding: 2rem;
+  font-size: 1.1rem;
+  padding: 0.75rem;
   background: ${props => props.$active ? '#f39c12' : '#2c3e50'};
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: ${props => props.$active ? '0 8px 0 #d35400' : '0 8px 0 #1a252f'};
+  box-shadow: ${props => props.$active ? '0 3px 0 #d35400' : '0 3px 0 #1a252f'};
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.25rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: ${props => props.$active ? '0 8px 0 #d35400' : '0 8px 0 #1a252f'};
+  }
 
   &:hover {
     background: #34495e;
@@ -66,23 +115,55 @@ const WordButton = styled.button<{ $active?: boolean }>`
   }
 
   &:active {
-    transform: translateY(4px);
-    box-shadow: 0 4px 0 #1a252f;
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #1a252f;
+
+    @media (min-width: 768px) {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #1a252f;
+    }
   }
 
-  transform: ${props => props.$active ? 'translateY(-4px)' : 'none'};
+  transform: ${props => props.$active ? 'translateY(-3px)' : 'none'};
+
+  @media (min-width: 768px) {
+    transform: ${props => props.$active ? 'translateY(-4px)' : 'none'};
+  }
 `;
 
 const Shortcut = styled.span`
-  font-size: 1rem;
+  font-size: 0.8rem;
   opacity: 0.6;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: inline;
+  }
 `;
 
 const Feedback = styled(motion.div)`
-  margin-top: 2rem;
-  font-size: 3rem;
+  margin-top: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
   text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+
+  @media (min-width: 768px) {
+    margin-top: 2rem;
+    font-size: 3rem;
+  }
+`;
+
+const HintText = styled.div`
+  margin-top: 1rem;
+  opacity: 0.5;
+  font-size: 0.8rem;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const WORD_ITEMS = [
@@ -165,7 +246,7 @@ const SkateboardWordMatch: React.FC = () => {
     <GameContainer title="Skateboard Word Match">
       <GameArea>
         <TargetBox onClick={() => speak(target.word)}>
-          <target.icon size={120} color="#f39c12" />
+          <target.icon color="#f39c12" />
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Volume2 size={24} color="#f39c12" />
             <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem' }}>Find the word!</p>
@@ -198,9 +279,9 @@ const SkateboardWordMatch: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <div style={{ marginTop: '2rem', opacity: 0.5, fontSize: '0.9rem' }}>
+        <HintText>
           Use 1-3 keys or Arrow Keys + Enter
-        </div>
+        </HintText>
       </GameArea>
     </GameContainer>
   );

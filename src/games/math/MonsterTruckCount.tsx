@@ -11,28 +11,42 @@ const GameArea = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 2rem;
+  padding: 0.5rem;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const TruckGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
   max-width: 800px;
+
+  @media (min-width: 768px) {
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
 `;
 
 const AnswerGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
+  gap: 0.4rem;
+
+  @media (min-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const NumberButton = styled.button<{ $active?: boolean }>`
-  font-size: 2.5rem;
-  width: 80px;
-  height: 80px;
+  font-size: 1.2rem;
+  width: 50px;
+  height: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,15 +54,40 @@ const NumberButton = styled.button<{ $active?: boolean }>`
   background: ${props => props.$active ? '#e67e22' : '#f39c12'};
   color: white;
   border: none;
-  border-radius: 15px;
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: ${props => props.$active ? '0 2px 0 #d35400' : '0 5px 0 #d35400'};
-  transform: ${props => props.$active ? 'translateY(3px)' : 'none'};
+  box-shadow: ${props => props.$active ? '0 1px 0 #d35400' : '0 3px 0 #d35400'};
+  transform: ${props => props.$active ? 'translateY(2px)' : 'none'};
   transition: all 0.1s;
 
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    box-shadow: ${props => props.$active ? '0 2px 0 #d35400' : '0 5px 0 #d35400'};
+    transform: ${props => props.$active ? 'translateY(3px)' : 'none'};
+  }
+
   &:active {
-    transform: translateY(5px);
+    transform: translateY(3px);
     box-shadow: none;
+
+    @media (min-width: 768px) {
+      transform: translateY(5px);
+    }
+  }
+`;
+
+const TruckWrapper = styled(motion.div)`
+  svg {
+    width: 40px;
+    height: 40px;
+
+    @media (min-width: 768px) {
+      width: 80px;
+      height: 80px;
+    }
   }
 `;
 
@@ -56,6 +95,11 @@ const Shortcut = styled.span`
   font-size: 0.8rem;
   opacity: 0.7;
   margin-top: -5px;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: inline;
+  }
 `;
 
 const Feedback = styled(motion.div)`
@@ -63,10 +107,25 @@ const Feedback = styled(motion.div)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 5rem;
+  font-size: 2.5rem;
   font-weight: bold;
   pointer-events: none;
   z-index: 20;
+
+  @media (min-width: 768px) {
+    font-size: 5rem;
+  }
+`;
+
+const ShortcutHint = styled.div`
+  margin-top: 1rem;
+  opacity: 0.5;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+    margin-top: 2rem;
+  }
 `;
 
 const MonsterTruckCount: React.FC = () => {
@@ -140,14 +199,14 @@ const MonsterTruckCount: React.FC = () => {
 
         <TruckGrid>
           {Array.from({ length: targetCount }).map((_, i) => (
-            <motion.div
+            <TruckWrapper
               key={`${targetCount}-${i}`}
               initial={{ scale: 0, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <Truck size={80} color="#f39c12" strokeWidth={1.5} />
-            </motion.div>
+              <Truck color="#f39c12" strokeWidth={1.5} />
+            </TruckWrapper>
           ))}
         </TruckGrid>
 
@@ -163,9 +222,9 @@ const MonsterTruckCount: React.FC = () => {
             </NumberButton>
           ))}
         </AnswerGrid>
-        <div style={{ marginTop: '2rem', opacity: 0.5 }}>
+        <ShortcutHint>
           Press keys 1-9 (0 for 10) or Arrows + Enter
-        </div>
+        </ShortcutHint>
       </GameArea>
     </GameContainer>
   );

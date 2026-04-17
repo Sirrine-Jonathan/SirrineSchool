@@ -51,21 +51,22 @@
             - paragraph [ref=e77]: Lock in your moves when you're ready. 24h turn window.
       - generic [ref=e78]:
         - generic [ref=e79]:
-          - generic [ref=e80]: Combatant Density
-          - generic [ref=e81]:
-            - button "1" [ref=e82] [cursor=pointer]
-            - button "3" [ref=e83] [cursor=pointer]
-            - button "5" [ref=e84] [cursor=pointer]
-            - button "9" [ref=e85] [cursor=pointer]
-            - spinbutton [ref=e87]: "3"
-          - paragraph [ref=e88]: Select number of AI opponents
-        - button "INITIALIZE ARCADE MODE" [ref=e89] [cursor=pointer]
-        - generic [ref=e90]:
-          - link "Access Tactical Manual" [ref=e91] [cursor=pointer]:
+          - generic [ref=e80]:
+            - generic [ref=e81]: Combatant Density
+            - generic [ref=e82]:
+              - button "1" [ref=e83] [cursor=pointer]
+              - button "3" [ref=e84] [cursor=pointer]
+              - button "5" [ref=e85] [cursor=pointer]
+              - button "9" [ref=e86] [cursor=pointer]
+              - spinbutton [ref=e88]: "3"
+            - paragraph [ref=e89]: Select number of AI opponents
+          - button "INITIALIZE ARCADE MODE" [ref=e90] [cursor=pointer]
+        - generic [ref=e91]:
+          - link "Access Tactical Manual" [ref=e92] [cursor=pointer]:
             - /url: /about
-            - img [ref=e92]
+            - img [ref=e93]
             - text: Access Tactical Manual
-          - button "Report Issue" [ref=e94] [cursor=pointer]:
-            - img [ref=e95]
+          - button "Report Issue" [ref=e95] [cursor=pointer]:
+            - img [ref=e96]
             - text: Report Issue
 ```

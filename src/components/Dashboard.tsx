@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
     ...(!isMobile ? [{ id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' }] : []),
   ];
 
-  const handleAction = (id: string) => {
+  const handleAction = React.useCallback((id: string) => {
     if (id === 'math') {
       if (currentUser === 'grace') navigate('/math/grace');
       else navigate('/math/charlie');
@@ -230,7 +230,7 @@ const Dashboard: React.FC = () => {
     } else if (id === 'typing') {
       navigate('/typing');
     }
-  };
+  }, [currentUser, navigate]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -262,7 +262,7 @@ const Dashboard: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedIndex, showSettings, currentUser, setCurrentUser, subjects, isMobile]);
+  }, [selectedIndex, showSettings, currentUser, setCurrentUser, subjects, isMobile, handleAction]);
 
   if (!user) return null;
 

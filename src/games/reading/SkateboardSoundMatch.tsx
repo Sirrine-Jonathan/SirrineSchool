@@ -98,8 +98,8 @@ const WordGrid = styled.div`
 `;
 
 const WordButton = styled.button<{ $active?: boolean }>`
-  font-size: 1.4rem;
-  padding: 1rem;
+  font-size: 1.2rem;
+  padding: 0.8rem;
   background: ${props => props.$active ? '#f39c12' : '#2c3e50'};
   color: white;
   border: none;
@@ -111,13 +111,22 @@ const WordButton = styled.button<{ $active?: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 
   @media (min-width: 768px) {
     font-size: 2rem;
     padding: 2rem;
     border-radius: 20px;
     box-shadow: ${props => props.$active ? '0 8px 0 #d35400' : '0 8px 0 #1a252f'};
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    @media (min-width: 768px) {
+      width: 64px;
+      height: 64px;
+    }
   }
 
   &:hover {
@@ -258,9 +267,12 @@ const SkateboardWordMatch: React.FC = () => {
       <GameArea>
         <TargetBox onClick={() => speak(target.word)}>
           <target.icon color="#f39c12" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Volume2 size={24} color="#f39c12" />
-            <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem' }}>Find the word!</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Volume2 size={24} color="#f39c12" />
+              <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem' }}>{target.word}</p>
+            </div>
+            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem' }}>Match the word!</p>
           </div>
         </TargetBox>
 
@@ -271,6 +283,7 @@ const SkateboardWordMatch: React.FC = () => {
               $active={selectedIndex === index}
               onClick={() => handleChoice(item.word)}
             >
+              <item.icon />
               {item.word}
               <Shortcut>({index + 1})</Shortcut>
             </WordButton>

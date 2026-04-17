@@ -22,17 +22,26 @@ const GameArea = styled.div`
   }
 `;
 
-const TruckGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
+const TruckGrid = styled.div<{ $count: number }>`
+  display: grid;
+  grid-template-columns: ${props => {
+    if (props.$count <= 4) return 'repeat(2, 1fr)';
+    if (props.$count <= 6) return 'repeat(3, 1fr)';
+    return 'repeat(5, 1fr)';
+  }};
+  gap: 0.5rem;
   margin-bottom: 2rem;
-  max-width: 800px;
+  width: 100%;
+  max-width: 600px;
   flex: 1;
   align-content: center;
+  justify-items: center;
 
   @media (min-width: 768px) {
+    grid-template-columns: ${props => {
+      if (props.$count <= 5) return `repeat(${props.$count}, 1fr)`;
+      return 'repeat(5, 1fr)';
+    }};
     gap: 2rem;
     margin-bottom: 4rem;
     flex: none;
@@ -89,14 +98,14 @@ const NumberButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
-const TruckWrapper = styled(motion.div)`
+const TruckWrapper = styled(motion.div)<{ $count: number }>`
   svg {
-    width: 50px;
-    height: 50px;
+    width: ${props => props.$count > 6 ? '50px' : '70px'};
+    height: ${props => props.$count > 6 ? '50px' : '70px'};
 
     @media (min-width: 768px) {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
     }
   }
 `;
@@ -207,10 +216,11 @@ const MonsterTruckCount: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <TruckGrid>
+        <TruckGrid $count={targetCount}>
           {Array.from({ length: targetCount }).map((_, i) => (
             <TruckWrapper
               key={`${targetCount}-${i}`}
+              $count={targetCount}
               initial={{ scale: 0, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}

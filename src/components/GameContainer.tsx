@@ -7,7 +7,7 @@ import { useUser } from '../hooks/useUser';
 const Container = styled.div<{ $theme: string }>`
   display: flex;
   flex-direction: column;
-  background: ${props => props.$theme === 'space_princess' ? '#0f0c29' : '#1a1a1a'};
+  background: transparent;
   color: white;
   height: 100%;
   width: 100%;

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserProvider, useUser } from './hooks/useUser';
+import GlobalStarfield from './components/GlobalStarfield';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import MonsterTruckCount from './games/math/MonsterTruckCount';
@@ -15,6 +16,7 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 `;
 
 const AppRoutes = () => {
@@ -59,6 +61,7 @@ function App() {
     <UserProvider>
       <Router>
         <AppContainer>
+          <GlobalStarfield />
           <AppRoutes />
         </AppContainer>
       </Router>

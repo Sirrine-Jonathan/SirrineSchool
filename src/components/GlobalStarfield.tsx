@@ -47,7 +47,13 @@ const GlobalStarfield: React.FC = () => {
       
       stars.forEach(star => {
         star.opacity += star.speed;
-        if (star.opacity > 1 || star.opacity < 0.1) star.speed *= -1;
+        if (star.opacity >= 1) {
+          star.opacity = 1;
+          star.speed *= -1;
+        } else if (star.opacity <= 0.1) {
+          star.opacity = 0.1;
+          star.speed *= -1;
+        }
         
         ctx.globalAlpha = star.opacity;
         ctx.beginPath();

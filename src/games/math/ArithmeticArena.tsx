@@ -5,64 +5,6 @@ import { Plus, Minus, Send, Star } from 'lucide-react';
 import GameContainer from '../../components/GameContainer';
 import { useUser } from '../../hooks/useUser';
 
-const CanvasStarfield = () => {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let stars: { x: number; y: number; size: number; opacity: number; speed: number }[] = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      initStars();
-    };
-
-    const initStars = () => {
-      stars = Array.from({ length: 150 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2,
-        opacity: Math.random(),
-        speed: 0.01 + Math.random() * 0.02
-      }));
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'white';
-      
-      stars.forEach(star => {
-        star.opacity += star.speed;
-        if (star.opacity > 1 || star.opacity < 0.1) star.speed *= -1;
-        
-        ctx.globalAlpha = star.opacity;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    window.addEventListener('resize', resize);
-    resize();
-    draw();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />;
-};
-
 const GameArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -79,12 +21,11 @@ const ProgressSection = styled.div`
   max-width: 800px;
   flex: 1;
   position: relative;
-  background: #000;
+  background: transparent;
   border-radius: 24px;
   margin-bottom: 1rem;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 40px rgba(0,0,0,1);
   min-height: 200px;
 `;
 
@@ -275,14 +216,21 @@ const Key = styled.button`
 `;
 
 const Feedback = styled(motion.div)`
-  margin-top: 0.5rem;
-  font-size: 1rem;
+  position: absolute;
+  top: 45%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: bold;
-  text-align: center;
+  pointer-events: none;
+  z-index: 100;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  font-size: 2.5rem;
 
   @media (min-width: 768px) {
-    margin-top: 1rem;
-    font-size: 1.8rem;
+    font-size: 5rem;
   }
 `;
 
@@ -362,7 +310,6 @@ const ArithmeticArena: React.FC = () => {
     <GameContainer title="Arithmetic Arena">
       <GameArea>
         <ProgressSection>
-          <CanvasStarfield />
           {!isSpace && <Mountain />}
           
           <Flag>{stepsCompleted} / {TOTAL_STEPS}</Flag>

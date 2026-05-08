@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { BookOpen, Calculator, Keyboard, LogOut, Award, Settings } from 'lucide-react';
+import { BookOpen, Calculator, Keyboard, Award, Settings, Terminal } from 'lucide-react';
 import SettingsModal from './SettingsModal';
 
 const DashboardContainer = styled.div<{ $theme: string }>`
@@ -20,7 +20,6 @@ const DashboardContainer = styled.div<{ $theme: string }>`
 
   @media (min-width: 768px) {
     padding: 1.5rem 2rem;
-    overflow: hidden;
   }
 `;
 
@@ -78,8 +77,7 @@ const SubjectGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 1rem;
   width: 100%;
-  flex: 1;
-  align-content: stretch;
+  padding-bottom: 2rem;
 
   @media (min-width: 480px) {
     grid-template-columns: 1fr 1fr;
@@ -88,8 +86,7 @@ const SubjectGrid = styled.div`
   @media (min-width: 768px) {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
-    align-content: center;
-    margin: auto;
+    margin: 0 auto;
     max-width: 1200px;
   }
 `;
@@ -213,24 +210,29 @@ const Dashboard: React.FC = () => {
   const user = currentUser ? users[currentUser] : null;
 
   const subjects = [
-    { id: 'math', name: 'Math', icon: Calculator, color: '#4caf50' },
-    ...(currentUser === 'grace' ? [{ id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' }] : []),
+    { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12' },
+    { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' },
+    { id: 'multiplication', name: 'Multiplication', icon: Calculator, color: '#4caf50' },
     { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
+    { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
     ...(!isMobile ? [{ id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' }] : []),
   ];
 
   const handleAction = React.useCallback((id: string) => {
-    if (id === 'math') {
-      if (currentUser === 'grace') navigate('/math/grace');
-      else navigate('/math/charlie');
+    if (id === 'counting') {
+      navigate('/math/counting');
+    } else if (id === 'multiplication') {
+      navigate('/math/multiplication');
     } else if (id === 'arithmetic') {
       navigate('/math/arithmetic');
     } else if (id === 'reading') {
       navigate('/reading');
+    } else if (id === 'coding') {
+      navigate('/coding');
     } else if (id === 'typing') {
       navigate('/typing');
     }
-  }, [currentUser, navigate]);
+  }, [navigate]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -245,18 +247,23 @@ const Dashboard: React.FC = () => {
         setSelectedIndex(prev => (prev - 1 + subjects.length) % subjects.length);
       } else if (e.key === 'Enter') {
         if (subjects[selectedIndex]) handleAction(subjects[selectedIndex].id);
-      } else if (e.key.toLowerCase() === 'm') {
-        handleAction('math');
-      } else if (e.key.toLowerCase() === 'a' && currentUser === 'grace') {
+      } else if (e.key.toLowerCase() === 'c') {
+        // C triggers counting, but 'o' can trigger coding since 'c' is taken
+        if (subjects.some(s => s.id === 'counting')) {
+            handleAction('counting');
+        }
+      } else if (e.key.toLowerCase() === 'o') {
+        handleAction('coding');
+      } else if (e.key.toLowerCase() === 'a') {
         handleAction('arithmetic');
+      } else if (e.key.toLowerCase() === 'm') {
+        handleAction('multiplication');
       } else if (e.key.toLowerCase() === 'r') {
         handleAction('reading');
       } else if (e.key.toLowerCase() === 't' && !isMobile) {
         handleAction('typing');
       } else if (e.key.toLowerCase() === 's') {
         setShowSettings(true);
-      } else if (e.key.toLowerCase() === 'q' || e.key === 'Escape') {
-        setCurrentUser(null);
       }
     };
 
@@ -272,7 +279,7 @@ const Dashboard: React.FC = () => {
       <Header>
         <UserInfo>
           <Award size={32} color="#ffd700" />
-          <h2 style={{ margin: 0 }}>Hello, {user.name}!</h2>
+          <h2 style={{ margin: 0 }}>Sirrine School</h2>
           <XPBadge>
             <Award size={16} /> {user.xp} XP
           </XPBadge>
@@ -280,9 +287,6 @@ const Dashboard: React.FC = () => {
         <ActionButtons>
           <LogoutButton onClick={() => setShowSettings(true)}>
             <Settings size={20} /> <span className="text">Settings (S)</span>
-          </LogoutButton>
-          <LogoutButton onClick={() => setCurrentUser(null)}>
-            <LogOut size={20} /> <span className="text">Switch User (Q)</span>
           </LogoutButton>
         </ActionButtons>
       </Header>

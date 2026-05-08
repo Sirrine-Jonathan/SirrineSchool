@@ -174,7 +174,7 @@ const FeedbackText = styled(motion.div)<{ $correct: boolean }>`
   }
 `;
 
-const SpaceMissionSupplies: React.FC = () => {
+const Multiplication: React.FC = () => {
   const [numCrates, setNumCrates] = useState(0);
   const [itemsPerCrate, setItemsPerCrate] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -214,7 +214,7 @@ const SpaceMissionSupplies: React.FC = () => {
   };
 
   return (
-    <GameContainer title="Space Mission Supplies">
+    <GameContainer title="Multiplication">
       <GameArea>
         <ProblemText>
           We need to load {numCrates} crates with {itemsPerCrate} fuel cells each.
@@ -289,4 +289,4 @@ const SpaceMissionSupplies: React.FC = () => {
   );
 };
 
-export default SpaceMissionSupplies;
+export default Multiplication;

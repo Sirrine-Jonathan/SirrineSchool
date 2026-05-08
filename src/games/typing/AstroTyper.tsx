@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { RefreshCw, Home as HomeIcon } from 'lucide-react';
+import { RefreshCw, Home as HomeIcon, Zap } from 'lucide-react';
 import GameContainer from '../../components/GameContainer';
 import { useUser } from '../../hooks/useUser';
 import Keyboard from '../../components/Keyboard';
@@ -128,6 +128,49 @@ const HUD = styled.div`
   }
 `;
 
+const ConfigPanel = styled.div`
+  position: absolute;
+  top: 3rem;
+  left: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 110;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+
+  @media (min-width: 768px) {
+    top: 4rem;
+    left: 2rem;
+    width: 300px;
+  }
+
+  label {
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: white;
+    white-space: nowrap;
+  }
+
+  input {
+    flex: 1;
+    cursor: pointer;
+    accent-color: #e94560;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #e94560;
+    min-width: 2rem;
+    text-align: center;
+  }
+`;
+
 const BottomArea = styled.div`
   position: absolute;
   bottom: 10px;
@@ -248,6 +291,7 @@ interface MeteorItem {
   xPercent: number;
   color: string;
   status: 'falling' | 'exploding';
+  duration: number;
 }
 
 const METEOR_COLORS = ['#ff4d4d', '#ff944d', '#ffd11a', '#ff1a1a', '#e68a00'];
@@ -265,6 +309,21 @@ const AstroTyper: React.FC = () => {
   const [totalSpawned, setTotalSpawned] = useState(0);
   const [hintKey, setHintKey] = useState<string | undefined>(undefined);
   
+  // Difficulty State
+  const [gameSpeed, setGameSpeed] = useState(() => {
+    const saved = localStorage.getItem('sirrine_typing_speed');
+    return saved ? parseInt(saved, 10) : 5; // 1-10 scale
+  });
+
+  // Convert 1-10 to animation duration (higher speed = lower duration)
+  // 1 = 60s (almost not moving), 10 = 8s (original max speed)
+  const calculateDuration = useCallback((speed: number) => {
+    const minDuration = 8;
+    const maxDuration = 60;
+    // Linear interpolation
+    return maxDuration - ((speed - 1) * (maxDuration - minDuration)) / 9;
+  }, []);
+
   // Refs for intervals/timeouts to clear them cleanly
   const nextSpawnTimeoutRef = useRef<number | null>(null);
 
@@ -333,6 +392,7 @@ const AstroTyper: React.FC = () => {
           xPercent: Math.random() * 80 + 10,
           color,
           status: 'falling',
+          duration: calculateDuration(gameSpeed),
         };
         
         setTotalSpawned(t => t + 1);
@@ -344,7 +404,7 @@ const AstroTyper: React.FC = () => {
 
     // Schedule next check
     nextSpawnTimeoutRef.current = window.setTimeout(stableSpawnLoop, checkRate);
-  }, []);
+  }, [gameSpeed, calculateDuration]);
 
   useEffect(() => {
     if (gameState === 'playing') {
@@ -419,6 +479,12 @@ const AstroTyper: React.FC = () => {
     });
   };
 
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSpeed = parseInt(e.target.value, 10);
+    setGameSpeed(newSpeed);
+    localStorage.setItem('sirrine_typing_speed', newSpeed.toString());
+  };
+
   const restartGame = () => {
     setScore(0);
     setTotalSpawned(0);
@@ -437,6 +503,21 @@ const AstroTyper: React.FC = () => {
           <span>Score: {score} / {totalSpawned}</span>
         </HUD>
 
+        <ConfigPanel>
+          <Zap size={16} color="#e94560" />
+          <label htmlFor="speed-slider">Speed</label>
+          <input 
+            id="speed-slider"
+            type="range" 
+            min="1" 
+            max="10" 
+            step="1"
+            value={gameSpeed} 
+            onChange={handleSpeedChange}
+          />
+          <span>{gameSpeed}</span>
+        </ConfigPanel>
+
         <AnimatePresence>
           {meteors.map(meteor => (
             <MeteorContainer
@@ -444,7 +525,7 @@ const AstroTyper: React.FC = () => {
               $left={meteor.xPercent}
               initial={{ top: '-10%' }}
               animate={meteor.status === 'falling' ? { top: '110%' } : undefined}
-              transition={{ duration: 8, ease: 'linear' }}
+              transition={{ duration: meteor.duration, ease: 'linear' }}
               onAnimationComplete={() => handleAnimationComplete(meteor.id)}
             >
               {meteor.status === 'falling' ? (

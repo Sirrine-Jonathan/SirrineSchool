@@ -1,26 +1,31 @@
-# Game Ideas for Sirrine School
+# Learning Game Ideas for Sirrine School
 
-## Math Games
-- **Space Grocery Checkout:** (Grace) Add items to a cart and calculate the total using simple addition.
-- **Monster Truck Racing:** (Charlie) Solve a math problem to give your truck a speed boost.
-- **Shape Sorter Galaxy:** Drag shapes into the correct black holes (matching shapes).
+## Math
+- **Fraction Pizza:** Slice a pizza into parts to match a given fraction (e.g., "Give 3/4 of the pizza to the customer").
+- **Money Market:** Shop for items and provide the correct change using coins and bills.
+- **Clock Quest:** Set the hands of an analog clock to match a digital time or a spoken time.
+- **Number Line Runner:** Jump a character along a number line to solve addition and subtraction problems.
+- **Pattern Pop:** Identify the next shape or number in a sequence and "pop" it.
 
-## Reading & Phonics
-- **Skateboard Word Shredder:** Match words to pictures or icons to perform tricks.
-- **Rhyme Time Rocket:** Find words that rhyme to fuel the rocket ship.
-- **Sight Word Safari:** Find the hidden sight words in a jungle scene.
-- **Sentence Builder Blocks:** Arrange words in the correct order to make a silly sentence.
+## Reading & Language
+- **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").
+- **Sentence Scramble:** Drag and drop words to form a grammatically correct sentence.
+- **Spelling Bee:** Listen to a word and type it correctly.
+- **Syllable Smash:** Tap the screen for each syllable heard in a word.
+- **Synonym Search:** Find the word that means the same thing as the target word.
 
-## Typing & Keyboard
-- **Astro Typer (Existing):** Type letters/words to defend against meteors.
-- **Key-Quest:** A dungeon crawler where moving and attacking is done by typing specific sequences.
+## Science
+- **Planet Picker:** Identify planets in the solar system based on their characteristics.
+- **Water Cycle Whirl:** Drag and drop elements (Sun, Cloud, Rain) to complete the water cycle.
+- **Animal Habitats:** Sort animals into their correct environments (Ocean, Forest, Desert).
+- **State of Matter:** Classify items as Solid, Liquid, or Gas.
 
-## Creativity & Logic
-- **Sticker Book:** Use XP to "buy" stickers and place them on a digital canvas.
-- **Pattern Princess:** Complete patterns of colors and shapes to build a castle.
-- **Dino-Logic:** Help a dinosaur reach its snack by placing directional blocks (intro to coding logic).
+## Geography
+- **Flag Finder:** Match countries to their flags.
+- **Continent Catch:** Identify continents on a world map.
+- **State Shapes:** Identify US states by their outline.
 
-## Accessibility Improvements
-- **Voice Hints:** Use the Speech Synthesis API to read instructions aloud for Charlie.
-- **Big Button Mode:** Extra large UI elements for easier clicking/tapping.
-- **Switch Support:** Basic support for single-switch accessibility devices.
+## Typing & Tech
+- **Code Caterpillar:** Type simple logic commands (Up, Down, Left, Right) to guide a caterpillar to food.
+- **Fast Finger Frenzy:** Type common words as they appear on screen to beat a timer.
+- **Short-key Samurai:** Learn common keyboard shortcuts (Ctrl+C, Ctrl+V, etc.) by pressing them at the right time.

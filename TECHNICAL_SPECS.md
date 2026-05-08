@@ -23,35 +23,39 @@
 3.  **Install:** Once loaded on the phone, you tap "Add to Home Screen".
 4.  **Offline:** Because of the PWA service worker, the app will work even if you turn off the server on your PC (until you need an update).
 
-## 4. User Profiles & Themes
+## 4. User Profile & Themes
 
-*   **Grace (7)**
-    *   *Themes:* Princesses, Space.
-    *   *Visual Style:* Sparkles, deep blues/purples (Space), elegant fonts.
-*   **Charlie (4)**
-    *   *Themes:* Monster Trucks, Skateboarding.
-    *   *Visual Style:* Gritty textures (dirt/concrete), bold fonts, high contrast.
+*   **Player Profile**
+    *   The app now uses a single "Player" profile to simplify access to all games.
+    *   *Default Theme:* Space Princess (can be customized in settings).
+    *   *Visual Style:* High-contrast, engaging UI with clear icons and large buttons for mobile play.
 
 ## 5. Curriculum & Game Concepts (2D Focus)
 
 ### A. Math (4 - 10 years)
-*   **Level 1 (Charlie): "Monster Truck Count"**
-    *   *Gameplay:* Side-scrolling 2D view. Truck drives on a jagged line.
-    *   *Challenge:* "How many rocks?" (Visual counting). Select the number to smash them.
-*   **Level 2 (Grace): "Space Mission Supplies"**
+*   **"Counting"**
+    *   *Gameplay:* Side-scrolling 2D view. Trucks or objects appear on screen.
+    *   *Challenge:* "How many?" (Visual counting). Select the correct number to progress.
+*   **"Multiplication"**
     *   *Gameplay:* 2D Inventory Management / Grid view.
-    *   *Challenge:* "Load 4 crates of 5 fuel cells." (Multiplication visuals). Drag and drop mechanics.
+    *   *Challenge:* Calculate totals based on groups (e.g., "Load 4 crates of 5 fuel cells").
+*   **"Arithmetic Arena"**
+    *   *Gameplay:* Fast-paced arithmetic problems.
+    *   *Challenge:* Solve addition, subtraction, etc., under time pressure.
 
-### B. Reading & Letters (Charlie focus)
-*   **"Skateboard Sound Match"**
-    *   *Gameplay:* Top-down or Side view 2D skater.
-    *   *Challenge:* Obstacles have letters. Tap the "B" obstacle when you hear "Buh" to grind the rail.
+### B. Reading & Letters
+*   **"Reading"**
+    *   *Gameplay:* Text and Audio-based matching.
+    *   *Modes:*
+        *   **Sound → Word:** Listen to a word, then select the correct written word.
+        *   **Word → Sound:** Read a word, then select the correct sound from multiple options.
+    *   *Challenge:* No pictures allowed—forces reliance on phonetic and sight-word recognition.
 
-### C. Typing (Grace focus, Charlie accessible)
-*   **"Astro Typer" / "Keyboard Race"**
-    *   *Gameplay:* 2D Cockpit overlay. Meteors (PNG sprites) fall from top to bottom.
-    *   *Settings:* `showHint` (boolean), `hintDelay` (ms).
+### C. Typing
+*   **"Astro Typer"**
+    *   *Gameplay:* 2D Cockpit overlay. Meteors fall from top to bottom.
     *   *Mechanic:* Type the letter on the meteor to zap it. Visual keyboard at bottom highlights keys if hint is on.
+
 
 ## 6. Asset Management
 *   **Strategy:** 2D Sprites (PNG/SVG).

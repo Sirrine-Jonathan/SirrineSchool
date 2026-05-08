@@ -4,10 +4,11 @@ import { UserProvider, useUser } from './hooks/useUser';
 import GlobalStarfield from './components/GlobalStarfield';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
-import MonsterTruckCount from './games/math/MonsterTruckCount';
-import SpaceMissionSupplies from './games/math/SpaceMissionSupplies';
+import Counting from './games/math/Counting';
+import Multiplication from './games/math/Multiplication';
 import ArithmeticArena from './games/math/ArithmeticArena';
 import AstroTyper from './games/typing/AstroTyper';
+import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 
 const AppContainer = styled.div`
@@ -33,12 +34,12 @@ const AppRoutes = () => {
         element={currentUser ? <Dashboard /> : <Navigate to="/" />} 
       />
       <Route 
-        path="/math/charlie" 
-        element={currentUser ? <MonsterTruckCount /> : <Navigate to="/" />} 
+        path="/math/counting" 
+        element={currentUser ? <Counting /> : <Navigate to="/" />} 
       />
       <Route 
-        path="/math/grace" 
-        element={currentUser ? <SpaceMissionSupplies /> : <Navigate to="/" />} 
+        path="/math/multiplication" 
+        element={currentUser ? <Multiplication /> : <Navigate to="/" />} 
       />
       <Route 
         path="/math/arithmetic" 
@@ -47,6 +48,10 @@ const AppRoutes = () => {
       <Route 
         path="/typing" 
         element={currentUser ? <AstroTyper /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/coding" 
+        element={currentUser ? <CodeCaterpillar /> : <Navigate to="/" />} 
       />
       <Route 
         path="/reading" 

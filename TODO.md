@@ -1,4 +1,7 @@
-- [x] The sole users Grace (age 7) and Charlie (age 4) are very young and have a hard time using a computer mouse. We should ensure the site is entirely navegable by keyboard and intuitive enough that a child can easily operate it.
-- [x] The reading game is kind of silly. It shows a picture of a letter, and then asks you to choose that letter from an option of other letters. Kinda pointless. Let's think up a better reading game. Still age appropriate.
-- [x] Come up with some other game ideas. Write them in a IDEAS.md in the project root.
-- [x] Grace wants her typing game to show meteors going down rather than balloons going up.
+- [x] Remove the concept of having different users, Grace & Charlie and just combine all their unique games into a single top level menu.
+- [x] Remove the pictures from the reading game so the player must rely on hearing the word and then choosing the correct written word.
+- [x] Create another mode for the reading game that works in reverse. Meaning, the player reads a word, then must choose from multiple sound buttons and choose the sound button that is speaking the word shown.
+- [x] Rename the Math game that does multiplication to "Multiplication".
+- [x] There's a math game that isn't the arithmetic or the multiplication game that only has to do with counting. Let's rename that game to 'Counting'.
+- [x] Write an IDEAS.md for additional learning games for grade school level children.
+- [x] Implement one of the new game ideas from IDEAS.md.

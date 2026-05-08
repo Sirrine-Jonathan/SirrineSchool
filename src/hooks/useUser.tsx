@@ -39,18 +39,10 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 const INITIAL_USERS: Record<string, UserProfile> = {
-  grace: {
-    name: 'Grace',
-    age: 7,
+  player: {
+    name: 'Player',
+    age: 6,
     theme: 'space_princess',
-    xp: 0,
-    inventory: [],
-    stats: {},
-  },
-  charlie: {
-    name: 'Charlie',
-    age: 4,
-    theme: 'monster_skate',
     xp: 0,
     inventory: [],
     stats: {},
@@ -61,12 +53,17 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<string | null>(() => {
-    return localStorage.getItem('sirrine_current_user');
+    return localStorage.getItem('sirrine_current_user') || 'player';
   });
 
   const [users, setUsers] = useState<Record<string, UserProfile>>(() => {
     const saved = localStorage.getItem('sirrine_users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    const parsed = saved ? JSON.parse(saved) : INITIAL_USERS;
+    // Ensure 'player' exists if migrating from old version
+    if (!parsed.player) {
+      parsed.player = INITIAL_USERS.player;
+    }
+    return parsed;
   });
 
   const [settings, setSettings] = useState<AppSettings>(() => {

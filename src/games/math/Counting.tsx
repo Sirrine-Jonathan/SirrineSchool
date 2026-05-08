@@ -105,20 +105,15 @@ const SubmitBtn = styled.button`
 
 const TruckGrid = styled.div<{ $count: number }>`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   align-content: center;
   justify-items: center;
 
-  @media (min-width: 480px) {
-    grid-template-columns: repeat(5, 1fr);
-  }
-
   @media (min-width: 768px) {
-    grid-template-columns: repeat(10, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
   }
 `;
 

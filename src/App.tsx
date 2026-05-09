@@ -10,6 +10,7 @@ import ArithmeticArena from './games/math/ArithmeticArena';
 import AstroTyper from './games/typing/AstroTyper';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
+import RhymeTime from './games/reading/RhymeTime';
 
 const AppContainer = styled.div`
   height: 100%;
@@ -56,6 +57,10 @@ const AppRoutes = () => {
       <Route 
         path="/reading" 
         element={currentUser ? <SkateboardWordMatch /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/reading/rhyme-time" 
+        element={currentUser ? <RhymeTime /> : <Navigate to="/" />} 
       />
     </Routes>
   );

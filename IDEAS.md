@@ -8,7 +8,7 @@
 - **Pattern Pop:** Identify the next shape or number in a sequence and "pop" it.
 
 ## Reading & Language
-- **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").
+- [x] **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").
 - **Sentence Scramble:** Drag and drop words to form a grammatically correct sentence.
 - **Spelling Bee:** Listen to a word and type it correctly.
 - **Syllable Smash:** Tap the screen for each syllable heard in a word.

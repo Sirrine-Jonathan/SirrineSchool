@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Rhyme Time Game', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('h2:has-text("Sirrine School")')).toBeVisible();
     // Navigate to Rhyme Time (Keyboard 'h')
     await page.keyboard.press('h');
     await expect(page).toHaveURL(/.*rhyme-time/);

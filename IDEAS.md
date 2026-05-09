@@ -10,7 +10,7 @@
 ## Reading & Language
 - [x] **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").
 - **Sentence Scramble:** Drag and drop words to form a grammatically correct sentence.
-- **Spelling Bee:** Listen to a word and type it correctly.
+- [x] **Spelling Bee:** Listen to a word and type it correctly.
 - **Syllable Smash:** Tap the screen for each syllable heard in a word.
 - **Synonym Search:** Find the word that means the same thing as the target word.
 
@@ -26,6 +26,6 @@
 - **State Shapes:** Identify US states by their outline.
 
 ## Typing & Tech
-- **Code Caterpillar:** Type simple logic commands (Up, Down, Left, Right) to guide a caterpillar to food.
+- [x] **Code Caterpillar:** Type simple logic commands (Up, Down, Left, Right) to guide a caterpillar to food.
 - **Fast Finger Frenzy:** Type common words as they appear on screen to beat a timer.
 - **Short-key Samurai:** Learn common keyboard shortcuts (Ctrl+C, Ctrl+V, etc.) by pressing them at the right time.

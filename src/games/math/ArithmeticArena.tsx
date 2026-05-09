@@ -429,6 +429,7 @@ const ArithmeticArena: React.FC = () => {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               style={{ color: feedback.includes('AWESOME') ? '#4caf50' : '#f44336' }}
+              data-testid="feedback"
             >
               {feedback}
             </Feedback>

@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Math Games', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('h2:has-text("Sirrine School")')).toBeVisible();
   });
 
   test('Arithmetic Arena: problem generation and numeric entry', async ({ page }) => {
@@ -35,7 +36,8 @@ test.describe('Math Games', () => {
     await page.getByTestId('key-go').click();
 
     // Check for feedback
-    await expect(page.getByTestId('feedback')).toBeVisible({ timeout: 10000 });
+    const feedback = page.getByTestId('feedback');
+    await expect(feedback).toBeVisible({ timeout: 10000 });
     await expect(feedback).toContainText('AWESOME');
     
     // Verify feedback disappears

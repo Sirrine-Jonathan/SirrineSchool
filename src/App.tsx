@@ -11,6 +11,7 @@ import AstroTyper from './games/typing/AstroTyper';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
+import SpellingBee from './games/reading/SpellingBee';
 
 const AppContainer = styled.div`
   height: 100%;
@@ -61,6 +62,10 @@ const AppRoutes = () => {
       <Route 
         path="/reading/rhyme-time" 
         element={currentUser ? <RhymeTime /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/reading/spelling-bee" 
+        element={currentUser ? <SpellingBee /> : <Navigate to="/" />} 
       />
     </Routes>
   );

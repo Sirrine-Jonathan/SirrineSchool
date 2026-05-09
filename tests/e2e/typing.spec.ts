@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Typing Game (Astro Typer)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('h2:has-text("Sirrine School")')).toBeVisible();
     await page.keyboard.press('t');
     await expect(page).toHaveURL(/.*typing/);
   });

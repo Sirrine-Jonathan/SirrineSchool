@@ -293,13 +293,14 @@ const Dashboard: React.FC = () => {
 
       <SubjectGrid>
         {subjects.map((subject, index) => (
-          <SubjectCard 
-            key={subject.id} 
-            $color={subject.color} 
+          <SubjectCard
+            key={subject.id}
+            $color={subject.color}
             $active={selectedIndex === index}
             onClick={() => handleAction(subject.id)}
-          >
-            <subject.icon size={isMobile ? 48 : 64} />
+            data-testid="subject-card"
+            data-subject-id={subject.id}
+          >            <subject.icon size={isMobile ? 48 : 64} />
             <SubjectTitle>{subject.name}</SubjectTitle>
             <ShortcutHint>(Press {subject.name[0]})</ShortcutHint>
           </SubjectCard>

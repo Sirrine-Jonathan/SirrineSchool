@@ -58,7 +58,8 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
-  const { settings, updateSettings } = useUser();
+  const { settings, updateSettings, currentUser, users, updateUserProfile } = useUser();
+  const user = currentUser ? users[currentUser] : null;
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -74,6 +75,40 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         <CloseButton onClick={onClose}><X /></CloseButton>
         <h2 style={{ color: '#ffd700', marginBottom: '2rem' }}>Settings</h2>
         
+        {user && (
+          <FormGroup>
+            <Label>Theme</Label>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <button 
+                style={{ 
+                  padding: '0.5rem 1rem', 
+                  borderRadius: '8px', 
+                  background: user.theme === 'space_princess' ? '#e94560' : '#444',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => updateUserProfile(currentUser!, { theme: 'space_princess' })}
+              >
+                Space Princess
+              </button>
+              <button 
+                style={{ 
+                  padding: '0.5rem 1rem', 
+                  borderRadius: '8px', 
+                  background: user.theme === 'monster_skate' ? '#f39c12' : '#444',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => updateUserProfile(currentUser!, { theme: 'monster_skate' })}
+              >
+                Monster Skate
+              </button>
+            </div>
+          </FormGroup>
+        )}
+
         <FormGroup style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Label>Show Typing Hints</Label>
           <input 

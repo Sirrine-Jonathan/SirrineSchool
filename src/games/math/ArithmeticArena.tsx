@@ -367,14 +367,15 @@ const ArithmeticArena: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
         >
           <Equation>
-            <NumberBox $color={themeColor}>{problem.a}</NumberBox>
-            {problem.op === '+' ? <Plus size={32} /> : <Minus size={32} />}
-            <NumberBox $color="#2196f3">{problem.b}</NumberBox>
+            <NumberBox $color={themeColor} data-testid="num-a">{problem.a}</NumberBox>
+            {problem.op === '+' ? <Plus size={32} data-testid="op" data-op="+" /> : <Minus size={32} data-testid="op" data-op="-" />}
+            <NumberBox $color="#2196f3" data-testid="num-b">{problem.b}</NumberBox>
             <span>=</span>
             <AnswerInput
               ref={inputRef}
               type="text"
               inputMode="none"
+              data-testid="answer-input"
               value={userAnswer}
               onChange={(e) => {
                 const val = e.target.value.replace(/[^0-9]/g, '');
@@ -398,7 +399,7 @@ const ArithmeticArena: React.FC = () => {
 
           <Keypad>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(n => (
-              <Key key={n} onClick={() => setUserAnswer(prev => prev + n)} tabIndex={-1}>
+              <Key key={n} onClick={() => setUserAnswer(prev => prev + n)} tabIndex={-1} data-testid={`key-${n}`}>
                 {n}
               </Key>
             ))}
@@ -406,6 +407,7 @@ const ArithmeticArena: React.FC = () => {
               style={{ gridColumn: 'span 2', background: '#e94560' }} 
               onClick={() => setUserAnswer('')}
               tabIndex={-1}
+              data-testid="key-clear"
             >
               Clear
             </Key>
@@ -413,6 +415,7 @@ const ArithmeticArena: React.FC = () => {
               style={{ gridColumn: 'span 3', background: '#4caf50' }} 
               onClick={handleSubmit}
               tabIndex={-1}
+              data-testid="key-go"
             >
               GO! <Send size={18} style={{ verticalAlign: 'middle', marginLeft: '5px' }} />
             </Key>

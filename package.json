@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "playwright test",
     "start": "serve -s dist -l $PORT",
-    "host": "vite --host"
+    "host": "vite --host",
+    "autodev": "powershell -ExecutionPolicy Bypass -File ./autodev.ps1"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -210,6 +210,7 @@ const Counting: React.FC = () => {
           <label htmlFor="range-slider">Range 1-</label>
           <input 
             id="range-slider"
+            data-testid="range-slider"
             type="range" 
             min="1" 
             max="20" 
@@ -226,6 +227,7 @@ const Counting: React.FC = () => {
               initial={{ scale: 0, opacity: 0, rotate: -20 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               exit={{ scale: 2, opacity: 0 }}
+              data-testid="feedback"
               style={{ color: feedback.startsWith('S') ? '#4caf50' : '#f44336' }}
             >
               {feedback}
@@ -233,7 +235,7 @@ const Counting: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <TruckGrid $count={targetCount}>
+        <TruckGrid $count={targetCount} data-testid="target-count">
           {Array.from({ length: targetCount }).map((_, i) => (
             <TruckWrapper
               key={`${targetCount}-${i}`}
@@ -254,12 +256,13 @@ const Counting: React.FC = () => {
               type="number"
               inputMode="numeric"
               pattern="[0-9]*"
+              data-testid="answer-input"
               value={userAnswer}
               onChange={e => setUserAnswer(e.target.value)}
               placeholder="?"
               autoFocus
             />
-            <SubmitBtn type="submit">
+            <SubmitBtn type="submit" data-testid="submit-btn">
               <Send size={32} />
             </SubmitBtn>
           </InputSection>

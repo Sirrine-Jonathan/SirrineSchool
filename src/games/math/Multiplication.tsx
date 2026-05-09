@@ -216,8 +216,8 @@ const Multiplication: React.FC = () => {
   return (
     <GameContainer title="Multiplication">
       <GameArea>
-        <ProblemText>
-          We need to load {numCrates} crates with {itemsPerCrate} fuel cells each.
+        <ProblemText data-testid="problem-text">
+          We need to load <span data-testid="num-crates">{numCrates}</span> crates with <span data-testid="items-per-crate">{itemsPerCrate}</span> fuel cells each.
           <br />
           How many fuel cells do we need in total?
         </ProblemText>
@@ -242,6 +242,7 @@ const Multiplication: React.FC = () => {
             ref={inputRef}
             type="text"
             inputMode="none"
+            data-testid="answer-input"
             value={userAnswer}
             onChange={(e) => {
               // Allow only numbers if typed from physical keyboard
@@ -279,6 +280,7 @@ const Multiplication: React.FC = () => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               $correct={feedback.includes('LIFT')}
+              data-testid="feedback"
             >
               {feedback}
             </FeedbackText>

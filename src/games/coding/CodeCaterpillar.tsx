@@ -275,13 +275,13 @@ const SortableItem = ({ id, block, onRemove }: { id: string, block: CommandBlock
                block.type === 'SLIDE_LEFT' ? ChevronsLeft : ChevronsRight;
 
   return (
-    <StyledSortableItem ref={setNodeRef} style={style} $isDragging={isDragging}>
+    <StyledSortableItem ref={setNodeRef} style={style} $isDragging={isDragging} data-testid="program-item" data-type={block.type}>
       <div {...attributes} {...listeners} style={{ cursor: 'grab', display: 'flex', alignItems: 'center' }}>
         <GripVertical size={20} opacity={0.6} />
       </div>
       <Icon size={20} />
       <span>{block.type.replace('_', ' ')}</span>
-      <RemoveBtn onClick={() => onRemove(id)}>
+      <RemoveBtn onClick={() => onRemove(id)} data-testid="remove-command">
         <X size={16} />
       </RemoveBtn>
     </StyledSortableItem>
@@ -358,6 +358,9 @@ const CodeCaterpillar: React.FC = () => {
     let currentHeading = heading;
     
     for (const block of program) {
+      let dx = 0;
+      let dy = 0;
+
       if (block.type === 'ROTATE_CW') {
         currentHeading = currentHeading + 90;
         setHeading(currentHeading);
@@ -372,8 +375,6 @@ const CodeCaterpillar: React.FC = () => {
 
       // Movement logic
       let normalizedHeading = ((currentHeading % 360) + 360) % 360;
-      let dx = 0;
-      let dy = 0;
 
       if (block.type === 'FORWARD') {
         if (normalizedHeading === 0) dy = -1;
@@ -450,6 +451,7 @@ const CodeCaterpillar: React.FC = () => {
                       animate={{ rotate: heading }} 
                       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       layoutId="bug-head"
+                      data-testid="bug-head"
                     >
                       <Bug />
                     </BugIcon>
@@ -465,6 +467,7 @@ const CodeCaterpillar: React.FC = () => {
                       }}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
                       layoutId="bug-food"
+                      data-testid="bug-food"
                     >
                       <Apple fill="#ff5252" />
                     </motion.div>
@@ -475,19 +478,19 @@ const CodeCaterpillar: React.FC = () => {
           </Grid>
           
           <ControlsGrid>
-            <ControlBtn onClick={() => addCommand('ROTATE_CCW')} disabled={program.length >= MAX_COMMANDS}>
+            <ControlBtn onClick={() => addCommand('ROTATE_CCW')} disabled={program.length >= MAX_COMMANDS} data-testid="add-rotate-ccw">
               <RefreshCcw /> L
             </ControlBtn>
-            <ControlBtn onClick={() => addCommand('SLIDE_LEFT')} disabled={program.length >= MAX_COMMANDS}>
+            <ControlBtn onClick={() => addCommand('SLIDE_LEFT')} disabled={program.length >= MAX_COMMANDS} data-testid="add-slide-left">
               <ChevronsLeft /> SLIDE
             </ControlBtn>
-            <ControlBtn onClick={() => addCommand('FORWARD')} disabled={program.length >= MAX_COMMANDS}>
+            <ControlBtn onClick={() => addCommand('FORWARD')} disabled={program.length >= MAX_COMMANDS} data-testid="add-forward">
               <ArrowUp /> FORW
             </ControlBtn>
-            <ControlBtn onClick={() => addCommand('SLIDE_RIGHT')} disabled={program.length >= MAX_COMMANDS}>
+            <ControlBtn onClick={() => addCommand('SLIDE_RIGHT')} disabled={program.length >= MAX_COMMANDS} data-testid="add-slide-right">
               <ChevronsRight /> SLIDE
             </ControlBtn>
-            <ControlBtn onClick={() => addCommand('ROTATE_CW')} disabled={program.length >= MAX_COMMANDS}>
+            <ControlBtn onClick={() => addCommand('ROTATE_CW')} disabled={program.length >= MAX_COMMANDS} data-testid="add-rotate-cw">
               <RefreshCw /> R
             </ControlBtn>
           </ControlsGrid>
@@ -500,6 +503,7 @@ const CodeCaterpillar: React.FC = () => {
               <button 
                 onClick={() => setProgram([])}
                 style={{ fontSize: '0.8rem', background: 'transparent', border: '1px solid #ff5252', color: '#ff5252', padding: '2px 8px', borderRadius: '4px' }}
+                data-testid="clear-program"
               >
                 Clear
               </button>
@@ -511,7 +515,7 @@ const CodeCaterpillar: React.FC = () => {
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <CommandList>
+            <CommandList data-testid="command-list">
               <SortableContext
                 items={program.map(b => b.id)}
                 strategy={verticalListSortingStrategy}
@@ -536,6 +540,7 @@ const CodeCaterpillar: React.FC = () => {
           <RunBtn 
             onClick={runProgram} 
             $disabled={isRunning || program.length === 0}
+            data-testid="run-program"
           >
             <Play fill="white" /> {isRunning ? 'RUNNING...' : 'RUN PROGRAM'}
           </RunBtn>
@@ -547,6 +552,7 @@ const CodeCaterpillar: React.FC = () => {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 2, opacity: 0 }}
+              data-testid="feedback"
             >
               {feedback}
             </Feedback>

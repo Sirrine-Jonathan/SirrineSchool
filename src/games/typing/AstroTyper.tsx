@@ -503,11 +503,12 @@ const AstroTyper: React.FC = () => {
           <span>Score: {score} / {totalSpawned}</span>
         </HUD>
 
-        <ConfigPanel>
+        <ConfigPanel data-testid="config-panel">
           <Zap size={16} color="#e94560" />
           <label htmlFor="speed-slider">Speed</label>
           <input 
             id="speed-slider"
+            data-testid="speed-slider"
             type="range" 
             min="1" 
             max="10" 
@@ -530,7 +531,7 @@ const AstroTyper: React.FC = () => {
             >
               {meteor.status === 'falling' ? (
                 <MeteorBody $color={meteor.color}>
-                  <Letter>{meteor.letter}</Letter>
+                  <Letter data-testid="meteor-letter">{meteor.letter}</Letter>
                 </MeteorBody>
               ) : (
                 <Explosion />

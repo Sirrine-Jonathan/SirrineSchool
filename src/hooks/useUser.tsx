@@ -28,6 +28,7 @@ interface UserContextType {
   users: Record<string, UserProfile>;
   settings: AppSettings;
   updateUserStats: (userName: string, stats: Partial<UserStats>) => void;
+  updateUserProfile: (userName: string, profile: Partial<UserProfile>) => void;
   addXP: (userName: string, amount: number) => void;
   updateSettings: (newSettings: Partial<AppSettings>) => void;
 }
@@ -43,6 +44,22 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     name: 'Player',
     age: 6,
     theme: 'space_princess',
+    xp: 0,
+    inventory: [],
+    stats: {},
+  },
+  grace: {
+    name: 'Grace',
+    age: 7,
+    theme: 'space_princess',
+    xp: 0,
+    inventory: [],
+    stats: {},
+  },
+  charlie: {
+    name: 'Charlie',
+    age: 4,
+    theme: 'monster_skate',
     xp: 0,
     inventory: [],
     stats: {},
@@ -101,6 +118,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
+  const updateUserProfile = (userName: string, profile: Partial<UserProfile>) => {
+    setUsers(prev => ({
+      ...prev,
+      [userName]: {
+        ...prev[userName],
+        ...profile
+      }
+    }));
+  };
+
   const addXP = (userName: string, amount: number) => {
     setUsers(prev => ({
       ...prev,
@@ -112,7 +139,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, users, settings, updateUserStats, addXP, updateSettings }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, users, settings, updateUserStats, updateUserProfile, addXP, updateSettings }}>
       {children}
     </UserContext.Provider>
   );

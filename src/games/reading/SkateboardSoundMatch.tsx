@@ -307,7 +307,10 @@ const SkateboardWordMatch: React.FC = () => {
           {mode === 'soundToWord' ? 'Sound → Word' : 'Word → Sound'} (M)
         </ModeToggle>
 
-        <TargetBox onClick={() => mode === 'soundToWord' && speak(target)}>
+        <TargetBox 
+          onClick={() => mode === 'soundToWord' && speak(target)}
+          data-target={target}
+        >
           {mode === 'soundToWord' ? (
             <>
               <Volume2 size={80} color="#f39c12" />
@@ -324,6 +327,7 @@ const SkateboardWordMatch: React.FC = () => {
               key={word} 
               $active={selectedIndex === index || selectedWord === word}
               onClick={() => handleOptionClick(word, index)}
+              data-word={word}
             >
               {mode === 'soundToWord' ? (
                 word

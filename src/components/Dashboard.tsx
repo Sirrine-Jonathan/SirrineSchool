@@ -212,6 +212,7 @@ const Dashboard: React.FC = () => {
   const subjects = [
     { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12' },
     { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' },
+    { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722' },
     { id: 'multiplication', name: 'Multiplication', icon: Calculator, color: '#4caf50' },
     { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
     { id: 'rhyme', name: 'Rhyme', icon: BookOpen, color: '#2196f3' },
@@ -228,6 +229,8 @@ const Dashboard: React.FC = () => {
       navigate('/math/multiplication');
     } else if (id === 'arithmetic') {
       navigate('/math/arithmetic');
+    } else if (id === 'fractions') {
+      navigate('/math/fractions');
     } else if (id === 'reading') {
       navigate('/reading');
     } else if (id === 'rhyme') {
@@ -261,6 +264,8 @@ const Dashboard: React.FC = () => {
         if (subjects.some(s => s.id === 'counting')) {
             handleAction('counting');
         }
+      } else if (e.key.toLowerCase() === 'f') {
+        handleAction('fractions');
       } else if (e.key.toLowerCase() === 'o') {
         handleAction('coding');
       } else if (e.key.toLowerCase() === 'a') {

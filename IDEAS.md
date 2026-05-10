@@ -1,7 +1,7 @@
 # Learning Game Ideas for Sirrine School
 
 ## Math
-- **Fraction Pizza:** Slice a pizza into parts to match a given fraction (e.g., "Give 3/4 of the pizza to the customer").
+- [x] **Fraction Pizza:** Slice a pizza into parts to match a given fraction (e.g., "Give 3/4 of the pizza to the customer").
 - **Money Market:** Shop for items and provide the correct change using coins and bills.
 - **Clock Quest:** Set the hands of an analog clock to match a digital time or a spoken time.
 - **Number Line Runner:** Jump a character along a number line to solve addition and subtraction problems.

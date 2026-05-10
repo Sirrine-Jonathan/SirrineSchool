@@ -9,7 +9,7 @@
 
 ## Reading & Language
 - [x] **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").
-- **Sentence Scramble:** Drag and drop words to form a grammatically correct sentence.
+- [x] **Sentence Scramble:** Drag and drop words to form a grammatically correct sentence.
 - [x] **Spelling Bee:** Listen to a word and type it correctly.
 - **Syllable Smash:** Tap the screen for each syllable heard in a word.
 - **Synonym Search:** Find the word that means the same thing as the target word.

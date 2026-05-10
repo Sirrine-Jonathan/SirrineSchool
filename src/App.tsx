@@ -12,6 +12,7 @@ import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
 import SpellingBee from './games/reading/SpellingBee';
+import SentenceScramble from './games/reading/SentenceScramble';
 
 const AppContainer = styled.div`
   height: 100%;
@@ -66,6 +67,10 @@ const AppRoutes = () => {
       <Route 
         path="/reading/spelling-bee" 
         element={currentUser ? <SpellingBee /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/reading/sentence-scramble" 
+        element={currentUser ? <SentenceScramble /> : <Navigate to="/" />} 
       />
     </Routes>
   );

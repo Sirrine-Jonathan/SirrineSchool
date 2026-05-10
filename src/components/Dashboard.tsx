@@ -216,6 +216,7 @@ const Dashboard: React.FC = () => {
     { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
     { id: 'rhyme', name: 'Rhyme', icon: BookOpen, color: '#2196f3' },
     { id: 'spelling', name: 'Spelling', icon: BookOpen, color: '#2196f3' },
+    { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3' },
     { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
     ...(!isMobile ? [{ id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' }] : []),
   ];
@@ -233,6 +234,8 @@ const Dashboard: React.FC = () => {
       navigate('/reading/rhyme-time');
     } else if (id === 'spelling') {
       navigate('/reading/spelling-bee');
+    } else if (id === 'scramble') {
+      navigate('/reading/sentence-scramble');
     } else if (id === 'coding') {
       navigate('/coding');
     } else if (id === 'typing') {
@@ -270,6 +273,8 @@ const Dashboard: React.FC = () => {
         handleAction('rhyme');
       } else if (e.key.toLowerCase() === 'b') {
         handleAction('spelling');
+      } else if (e.key.toLowerCase() === 'e') {
+        handleAction('scramble');
       } else if (e.key.toLowerCase() === 't' && !isMobile) {
         handleAction('typing');
       } else if (e.key.toLowerCase() === 's') {

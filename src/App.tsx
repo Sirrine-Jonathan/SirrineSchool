@@ -11,6 +11,7 @@ import FractionPizza from './games/math/FractionPizza';
 import PatternPop from './games/math/PatternPop';
 import ClockQuest from './games/math/ClockQuest';
 import AstroTyper from './games/typing/AstroTyper';
+import FastFingerFrenzy from './games/typing/FastFingerFrenzy';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
@@ -67,6 +68,10 @@ const AppRoutes = () => {
       <Route 
         path="/typing" 
         element={currentUser ? <AstroTyper /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/typing/fast-finger" 
+        element={currentUser ? <FastFingerFrenzy /> : <Navigate to="/" />} 
       />
       <Route 
         path="/coding" 

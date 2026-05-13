@@ -222,7 +222,10 @@ const Dashboard: React.FC = () => {
     { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3' },
     { id: 'habitats', name: 'Habitats', icon: FlaskConical, color: '#4caf50' },
     { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
-    ...(!isMobile ? [{ id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' }] : []),
+    ...(!isMobile ? [
+      { id: 'typing', name: 'Astro Typer', icon: Keyboard, color: '#ff9800' },
+      { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63' }
+    ] : []),
   ], [isMobile]);
 
   const handleAction = React.useCallback((id: string) => {
@@ -252,6 +255,8 @@ const Dashboard: React.FC = () => {
       navigate('/coding');
     } else if (id === 'typing') {
       navigate('/typing');
+    } else if (id === 'fast-finger') {
+      navigate('/typing/fast-finger');
     }
   }, [navigate]);
 
@@ -297,6 +302,8 @@ const Dashboard: React.FC = () => {
         handleAction('habitats');
       } else if (e.key.toLowerCase() === 't' && !isMobile) {
         handleAction('typing');
+      } else if (e.key.toLowerCase() === 'y' && !isMobile) {
+        handleAction('fast-finger');
       } else if (e.key.toLowerCase() === 's') {
         setShowSettings(true);
       }

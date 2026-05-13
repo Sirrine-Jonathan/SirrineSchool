@@ -27,5 +27,5 @@
 
 ## Typing & Tech
 - [x] **Code Caterpillar:** Type simple logic commands (Up, Down, Left, Right) to guide a caterpillar to food.
-- **Fast Finger Frenzy:** Type common words as they appear on screen to beat a timer.
+- [x] **Fast Finger Frenzy:** Type common words as they appear on screen to beat a timer.
 - **Short-key Samurai:** Learn common keyboard shortcuts (Ctrl+C, Ctrl+V, etc.) by pressing them at the right time.

@@ -20,7 +20,10 @@ test.describe('Sirrine School Keyboard Navigation & App Factory Baseline', () =>
     await page.waitForTimeout(500);
     
     // Default selection is Counting (index 0). 
-    // Press ArrowRight to move to Arithmetic (index 1), then Multiplication (2), Reading (3).
+    // Press ArrowRight 6 times to move to Reading (index 6).
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');

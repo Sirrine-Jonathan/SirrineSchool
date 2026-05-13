@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { BookOpen, Calculator, Keyboard, Award, Settings, Terminal } from 'lucide-react';
+import { BookOpen, Calculator, Keyboard, Award, Settings, Terminal, FlaskConical } from 'lucide-react';
 import SettingsModal from './SettingsModal';
 
 const DashboardContainer = styled.div<{ $theme: string }>`
@@ -209,7 +209,7 @@ const Dashboard: React.FC = () => {
   const isMobile = useIsMobile();
   const user = currentUser ? users[currentUser] : null;
 
-  const subjects = [
+  const subjects = React.useMemo(() => [
     { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12' },
     { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' },
     { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722' },
@@ -220,9 +220,10 @@ const Dashboard: React.FC = () => {
     { id: 'rhyme', name: 'Rhyme', icon: BookOpen, color: '#2196f3' },
     { id: 'spelling', name: 'Spelling', icon: BookOpen, color: '#2196f3' },
     { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3' },
+    { id: 'habitats', name: 'Habitats', icon: FlaskConical, color: '#4caf50' },
     { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
     ...(!isMobile ? [{ id: 'typing', name: 'Typing', icon: Keyboard, color: '#ff9800' }] : []),
-  ];
+  ], [isMobile]);
 
   const handleAction = React.useCallback((id: string) => {
     if (id === 'counting') {
@@ -245,6 +246,8 @@ const Dashboard: React.FC = () => {
       navigate('/reading/spelling-bee');
     } else if (id === 'scramble') {
       navigate('/reading/sentence-scramble');
+    } else if (id === 'habitats') {
+      navigate('/science/habitats');
     } else if (id === 'coding') {
       navigate('/coding');
     } else if (id === 'typing') {
@@ -290,6 +293,8 @@ const Dashboard: React.FC = () => {
         handleAction('spelling');
       } else if (e.key.toLowerCase() === 'e') {
         handleAction('scramble');
+      } else if (e.key.toLowerCase() === 'i') {
+        handleAction('habitats');
       } else if (e.key.toLowerCase() === 't' && !isMobile) {
         handleAction('typing');
       } else if (e.key.toLowerCase() === 's') {

@@ -16,6 +16,7 @@ import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
 import SpellingBee from './games/reading/SpellingBee';
 import SentenceScramble from './games/reading/SentenceScramble';
+import AnimalHabitats from './games/science/AnimalHabitats';
 
 const AppContainer = styled.div`
   height: 100%;
@@ -86,6 +87,10 @@ const AppRoutes = () => {
       <Route 
         path="/reading/sentence-scramble" 
         element={currentUser ? <SentenceScramble /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/science/habitats" 
+        element={currentUser ? <AnimalHabitats /> : <Navigate to="/" />} 
       />
     </Routes>
   );

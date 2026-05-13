@@ -17,7 +17,7 @@
 ## Science
 - **Planet Picker:** Identify planets in the solar system based on their characteristics.
 - **Water Cycle Whirl:** Drag and drop elements (Sun, Cloud, Rain) to complete the water cycle.
-- **Animal Habitats:** Sort animals into their correct environments (Ocean, Forest, Desert).
+- [x] **Animal Habitats:** Sort animals into their correct environments (Ocean, Forest, Desert).
 - **State of Matter:** Classify items as Solid, Liquid, or Gas.
 
 ## Geography

@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Code Caterpillar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(500);
     await page.keyboard.press('o');
     await expect(page).toHaveURL(/.*coding/);
   });

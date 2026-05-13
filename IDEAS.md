@@ -5,7 +5,7 @@
 - **Money Market:** Shop for items and provide the correct change using coins and bills.
 - **Clock Quest:** Set the hands of an analog clock to match a digital time or a spoken time.
 - **Number Line Runner:** Jump a character along a number line to solve addition and subtraction problems.
-- **Pattern Pop:** Identify the next shape or number in a sequence and "pop" it.
+- [x] **Pattern Pop:** Identify the next shape or number in a sequence and "pop" it.
 
 ## Reading & Language
 - [x] **Rhyme Time:** Match words that rhyme (e.g., "CAT" and "HAT").

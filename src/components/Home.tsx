@@ -145,6 +145,7 @@ const Home: React.FC = () => {
           $theme="space_princess" 
           $active={selectedIndex === 0}
           onClick={() => setCurrentUser('grace')}
+          data-testid="user-card"
         >
           <Rocket size={64} color="#e94560" />
           <Name>{users.grace.name}</Name>
@@ -154,6 +155,7 @@ const Home: React.FC = () => {
           $theme="monster_skate" 
           $active={selectedIndex === 1}
           onClick={() => setCurrentUser('charlie')}
+          data-testid="user-card"
         >
           <Truck size={64} color="#f39c12" />
           <Name>{users.charlie.name}</Name>

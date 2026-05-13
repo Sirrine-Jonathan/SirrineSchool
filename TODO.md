@@ -5,3 +5,7 @@
 - [x] There's a math game that isn't the arithmetic or the multiplication game that only has to do with counting. Let's rename that game to 'Counting'.
 - [x] Write an IDEAS.md for additional learning games for grade school level children.
 - [x] Implement one of the new game ideas from IDEAS.md.
+- [ ] Add a search/filter input at the top of the dashboard for fuzzy searching games.
+- [ ] Categorize each game (e.g., Math, Reading, Coding) and add filter pills/tags to the dashboard UI.
+- [ ] Track game play history in browser storage to show "Recent Games" and enable sorting (Most Recent, Alphabetical A-Z/Z-A).
+- [ ] Highlight "New" (unplayed) games and lift them to the top of the dashboard list automatically.

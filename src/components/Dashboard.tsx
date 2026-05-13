@@ -213,6 +213,7 @@ const Dashboard: React.FC = () => {
     { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12' },
     { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' },
     { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722' },
+    { id: 'clock', name: 'Clock', icon: Calculator, color: '#00bcd4' },
     { id: 'patterns', name: 'Patterns', icon: Calculator, color: '#ffeb3b' },
     { id: 'multiplication', name: 'Multiplication', icon: Calculator, color: '#4caf50' },
     { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
@@ -232,6 +233,8 @@ const Dashboard: React.FC = () => {
       navigate('/math/arithmetic');
     } else if (id === 'fractions') {
       navigate('/math/fractions');
+    } else if (id === 'clock') {
+      navigate('/math/clock');
     } else if (id === 'patterns') {
       navigate('/math/patterns');
     } else if (id === 'reading') {
@@ -269,6 +272,8 @@ const Dashboard: React.FC = () => {
         }
       } else if (e.key.toLowerCase() === 'f') {
         handleAction('fractions');
+      } else if (e.key.toLowerCase() === 'k') {
+        handleAction('clock');
       } else if (e.key.toLowerCase() === 'p') {
         handleAction('patterns');
       } else if (e.key.toLowerCase() === 'o') {

@@ -9,6 +9,7 @@ import Multiplication from './games/math/Multiplication';
 import ArithmeticArena from './games/math/ArithmeticArena';
 import FractionPizza from './games/math/FractionPizza';
 import PatternPop from './games/math/PatternPop';
+import ClockQuest from './games/math/ClockQuest';
 import AstroTyper from './games/typing/AstroTyper';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
@@ -57,6 +58,10 @@ const AppRoutes = () => {
       <Route 
         path="/math/patterns" 
         element={currentUser ? <PatternPop /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/math/clock" 
+        element={currentUser ? <ClockQuest /> : <Navigate to="/" />} 
       />
       <Route 
         path="/typing" 

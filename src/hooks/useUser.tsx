@@ -14,6 +14,7 @@ interface UserProfile {
   xp: number;
   inventory: string[];
   stats: UserStats;
+  gameHistory: Record<string, number>; // gameId -> lastPlayedTimestamp
 }
 
 interface AppSettings {
@@ -31,6 +32,7 @@ interface UserContextType {
   updateUserProfile: (userName: string, profile: Partial<UserProfile>) => void;
   addXP: (userName: string, amount: number) => void;
   updateSettings: (newSettings: Partial<AppSettings>) => void;
+  recordGamePlay: (userName: string, gameId: string) => void;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -47,6 +49,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     xp: 0,
     inventory: [],
     stats: {},
+    gameHistory: {},
   },
   grace: {
     name: 'Grace',
@@ -55,6 +58,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     xp: 0,
     inventory: [],
     stats: {},
+    gameHistory: {},
   },
   charlie: {
     name: 'Charlie',
@@ -63,6 +67,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     xp: 0,
     inventory: [],
     stats: {},
+    gameHistory: {},
   },
 };
 
@@ -80,6 +85,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!parsed.player) {
       parsed.player = INITIAL_USERS.player;
     }
+    // Ensure gameHistory exists for all users
+    Object.keys(parsed).forEach(key => {
+      if (!parsed[key].gameHistory) {
+        parsed[key].gameHistory = {};
+      }
+    });
     return parsed;
   });
 
@@ -138,8 +149,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
+  const recordGamePlay = (userName: string, gameId: string) => {
+    setUsers(prev => ({
+      ...prev,
+      [userName]: {
+        ...prev[userName],
+        gameHistory: {
+          ...prev[userName].gameHistory,
+          [gameId]: Date.now()
+        }
+      }
+    }));
+  };
+
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, users, settings, updateUserStats, updateUserProfile, addXP, updateSettings }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, users, settings, updateUserStats, updateUserProfile, addXP, updateSettings, recordGamePlay }}>
       {children}
     </UserContext.Provider>
   );

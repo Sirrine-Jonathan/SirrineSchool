@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { BookOpen, Calculator, Keyboard, Award, Settings, Terminal, FlaskConical } from 'lucide-react';
+import { BookOpen, Calculator, Keyboard, Award, Settings, Terminal, FlaskConical, Search, Clock as ClockIcon, Sparkles } from 'lucide-react';
 import SettingsModal from './SettingsModal';
 
 const DashboardContainer = styled.div<{ $theme: string }>`
@@ -72,6 +72,102 @@ const XPBadge = styled.div`
   }
 `;
 
+const ControlsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+  
+  svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 3rem;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #2196f3;
+    background: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const FilterPills = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+`;
+
+const FilterPill = styled.button<{ $active: boolean, $color?: string }>`
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 2px solid ${props => props.$active ? (props.$color || '#2196f3') : 'rgba(255, 255, 255, 0.1)'};
+  background: ${props => props.$active ? (props.$color || '#2196f3') : 'transparent'};
+  color: ${props => props.$active ? '#000' : 'white'};
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+
+  &:hover {
+    border-color: ${props => props.$color || '#2196f3'};
+  }
+`;
+
+const SortContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+`;
+
+const SortButton = styled.button<{ $active: boolean }>`
+  background: transparent;
+  border: none;
+  color: ${props => props.$active ? '#2196f3' : 'inherit'};
+  cursor: pointer;
+  font-weight: ${props => props.$active ? 'bold' : 'normal'};
+  text-decoration: ${props => props.$active ? 'underline' : 'none'};
+
+  &:hover {
+    color: white;
+  }
+`;
+
 const SubjectGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -84,7 +180,7 @@ const SubjectGrid = styled.div`
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
     margin: 0 auto;
     max-width: 1200px;
@@ -108,6 +204,7 @@ const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
   min-height: 80px;
   transform: ${props => props.$active ? 'translateY(-3px)' : 'none'};
   box-shadow: ${props => props.$active ? `0 5px 15px rgba(0,0,0,0.3), 0 0 10px ${props.$color}` : 'none'};
+  position: relative;
 
   @media (min-width: 768px) {
     flex-direction: column;
@@ -140,6 +237,23 @@ const SubjectCard = styled.button<{ $color: string, $active?: boolean }>`
       height: 64px;
     }
   }
+`;
+
+const Badge = styled.div<{ $color: string }>`
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: ${props => props.$color};
+  color: #000;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 2;
 `;
 
 const ShortcutHint = styled.span`
@@ -202,66 +316,74 @@ const LogoutButton = styled.button`
 `;
 
 const Dashboard: React.FC = () => {
-  const { currentUser, setCurrentUser, users } = useUser();
+  const { currentUser, users, recordGamePlay } = useUser();
   const [showSettings, setShowSettings] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState('All');
+  const [sortBy, setSortBy] = React.useState<'alphabetical' | 'recent'>('alphabetical');
+  
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const user = currentUser ? users[currentUser] : null;
 
   const subjects = React.useMemo(() => [
-    { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12' },
-    { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63' },
-    { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722' },
-    { id: 'clock', name: 'Clock', icon: Calculator, color: '#00bcd4' },
-    { id: 'patterns', name: 'Patterns', icon: Calculator, color: '#ffeb3b' },
-    { id: 'multiplication', name: 'Multiplication', icon: Calculator, color: '#4caf50' },
-    { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3' },
-    { id: 'rhyme', name: 'Rhyme', icon: BookOpen, color: '#2196f3' },
-    { id: 'spelling', name: 'Spelling', icon: BookOpen, color: '#2196f3' },
-    { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3' },
-    { id: 'habitats', name: 'Habitats', icon: FlaskConical, color: '#4caf50' },
-    { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
+    { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12', category: 'Math', path: '/math/counting' },
+    { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63', category: 'Math', path: '/math/arithmetic' },
+    { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722', category: 'Math', path: '/math/fractions' },
+    { id: 'clock', name: 'Clock', icon: Calculator, color: '#00bcd4', category: 'Math', path: '/math/clock' },
+    { id: 'patterns', name: 'Patterns', icon: Calculator, color: '#ffeb3b', category: 'Math', path: '/math/patterns' },
+    { id: 'multiplication', name: 'Multiplication', icon: Calculator, color: '#4caf50', category: 'Math', path: '/math/multiplication' },
+    { id: 'reading', name: 'Reading', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading' },
+    { id: 'rhyme', name: 'Rhyme', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading/rhyme-time' },
+    { id: 'spelling', name: 'Spelling', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading/spelling-bee' },
+    { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading/sentence-scramble' },
+    { id: 'habitats', name: 'Habitats', icon: FlaskConical, color: '#4caf50', category: 'Science', path: '/science/habitats' },
+    { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0', category: 'Coding', path: '/coding' },
     ...(!isMobile ? [
-      { id: 'typing', name: 'Astro Typer', icon: Keyboard, color: '#ff9800' },
-      { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63' },
-      { id: 'shortkey', name: 'Shortkey Samurai', icon: Keyboard, color: '#c0392b' }
+      { id: 'typing', name: 'Astro Typer', icon: Keyboard, color: '#ff9800', category: 'Typing', path: '/typing' },
+      { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63', category: 'Typing', path: '/typing/fast-finger' },
+      { id: 'shortkey', name: 'Shortkey Samurai', icon: Keyboard, color: '#c0392b', category: 'Typing', path: '/typing/shortkey' }
     ] : []),
   ], [isMobile]);
 
+  const categories = React.useMemo(() => {
+    const cats = new Set(subjects.map(s => s.category));
+    return ['All', ...Array.from(cats)];
+  }, [subjects]);
+
   const handleAction = React.useCallback((id: string) => {
-    if (id === 'counting') {
-      navigate('/math/counting');
-    } else if (id === 'multiplication') {
-      navigate('/math/multiplication');
-    } else if (id === 'arithmetic') {
-      navigate('/math/arithmetic');
-    } else if (id === 'fractions') {
-      navigate('/math/fractions');
-    } else if (id === 'clock') {
-      navigate('/math/clock');
-    } else if (id === 'patterns') {
-      navigate('/math/patterns');
-    } else if (id === 'reading') {
-      navigate('/reading');
-    } else if (id === 'rhyme') {
-      navigate('/reading/rhyme-time');
-    } else if (id === 'spelling') {
-      navigate('/reading/spelling-bee');
-    } else if (id === 'scramble') {
-      navigate('/reading/sentence-scramble');
-    } else if (id === 'habitats') {
-      navigate('/science/habitats');
-    } else if (id === 'coding') {
-      navigate('/coding');
-    } else if (id === 'typing') {
-      navigate('/typing');
-    } else if (id === 'fast-finger') {
-      navigate('/typing/fast-finger');
-    } else if (id === 'shortkey') {
-      navigate('/typing/shortkey');
+    const subject = subjects.find(s => s.id === id);
+    if (subject && currentUser) {
+      recordGamePlay(currentUser, id);
+      navigate(subject.path);
     }
-  }, [navigate]);
+  }, [navigate, subjects, recordGamePlay, currentUser]);
+
+  const filteredAndSortedSubjects = React.useMemo(() => {
+    let result = subjects.filter(s => {
+      const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    result.sort((a, b) => {
+      const aLastPlayed = user?.gameHistory?.[a.id] || 0;
+      const bLastPlayed = user?.gameHistory?.[b.id] || 0;
+
+      // "New" games (never played) always go to the top
+      if (aLastPlayed === 0 && bLastPlayed !== 0) return -1;
+      if (aLastPlayed !== 0 && bLastPlayed === 0) return 1;
+
+      if (sortBy === 'recent') {
+        return bLastPlayed - aLastPlayed;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+
+    return result;
+  }, [subjects, searchQuery, selectedCategory, sortBy, user?.gameHistory]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -270,53 +392,38 @@ const Dashboard: React.FC = () => {
         return;
       }
 
+      // Don't trigger shortcuts if focus is in search input
+      if (document.activeElement?.tagName === 'INPUT') {
+          if (e.key === 'Escape') {
+              (document.activeElement as HTMLInputElement).blur();
+          }
+          return;
+      }
+
       if (e.key === 'ArrowRight') {
-        setSelectedIndex(prev => (prev + 1) % subjects.length);
+        setSelectedIndex(prev => (prev + 1) % filteredAndSortedSubjects.length);
       } else if (e.key === 'ArrowLeft') {
-        setSelectedIndex(prev => (prev - 1 + subjects.length) % subjects.length);
+        setSelectedIndex(prev => (prev - 1 + filteredAndSortedSubjects.length) % filteredAndSortedSubjects.length);
       } else if (e.key === 'Enter') {
-        if (subjects[selectedIndex]) handleAction(subjects[selectedIndex].id);
-      } else if (e.key.toLowerCase() === 'c') {
-        // C triggers counting, but 'o' can trigger coding since 'c' is taken
-        if (subjects.some(s => s.id === 'counting')) {
-            handleAction('counting');
-        }
-      } else if (e.key.toLowerCase() === 'f') {
-        handleAction('fractions');
-      } else if (e.key.toLowerCase() === 'k') {
-        handleAction('clock');
-      } else if (e.key.toLowerCase() === 'p') {
-        handleAction('patterns');
-      } else if (e.key.toLowerCase() === 'o') {
-        handleAction('coding');
-      } else if (e.key.toLowerCase() === 'a') {
-        handleAction('arithmetic');
-      } else if (e.key.toLowerCase() === 'm') {
-        handleAction('multiplication');
-      } else if (e.key.toLowerCase() === 'r') {
-        handleAction('reading');
-      } else if (e.key.toLowerCase() === 'h') {
-        handleAction('rhyme');
-      } else if (e.key.toLowerCase() === 'b') {
-        handleAction('spelling');
-      } else if (e.key.toLowerCase() === 'e') {
-        handleAction('scramble');
-      } else if (e.key.toLowerCase() === 'i') {
-        handleAction('habitats');
-      } else if (e.key.toLowerCase() === 't' && !isMobile) {
-        handleAction('typing');
-      } else if (e.key.toLowerCase() === 'y' && !isMobile) {
-        handleAction('fast-finger');
-      } else if (e.key.toLowerCase() === 'u' && !isMobile) {
-        handleAction('shortkey');
+        if (filteredAndSortedSubjects[selectedIndex]) handleAction(filteredAndSortedSubjects[selectedIndex].id);
+      } else if (e.key === '/') {
+          e.preventDefault();
+          document.getElementById('game-search')?.focus();
       } else if (e.key.toLowerCase() === 's') {
         setShowSettings(true);
+      } else {
+          // General shortcuts for visible games
+          const char = e.key.toLowerCase();
+          const match = filteredAndSortedSubjects.find(s => s.name.toLowerCase().startsWith(char));
+          if (match) {
+              handleAction(match.id);
+          }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedIndex, showSettings, currentUser, setCurrentUser, subjects, isMobile, handleAction]);
+  }, [selectedIndex, showSettings, filteredAndSortedSubjects, handleAction]);
 
   if (!user) return null;
 
@@ -338,20 +445,77 @@ const Dashboard: React.FC = () => {
         </ActionButtons>
       </Header>
 
+      <ControlsContainer>
+        <SearchContainer>
+          <Search size={20} />
+          <SearchInput 
+            id="game-search"
+            type="text" 
+            placeholder="Search games... (Press /)" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </SearchContainer>
+        
+        <FilterPills>
+          {categories.map(cat => (
+            <FilterPill 
+              key={cat} 
+              $active={selectedCategory === cat}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </FilterPill>
+          ))}
+        </FilterPills>
+
+        <SortContainer>
+          <span>Sort by:</span>
+          <SortButton 
+            $active={sortBy === 'alphabetical'} 
+            onClick={() => setSortBy('alphabetical')}
+          >
+            A-Z
+          </SortButton>
+          <SortButton 
+            $active={sortBy === 'recent'} 
+            onClick={() => setSortBy('recent')}
+          >
+            Recent
+          </SortButton>
+        </SortContainer>
+      </ControlsContainer>
+
       <SubjectGrid>
-        {subjects.map((subject, index) => (
-          <SubjectCard
-            key={subject.id}
-            $color={subject.color}
-            $active={selectedIndex === index}
-            onClick={() => handleAction(subject.id)}
-            data-testid="subject-card"
-            data-subject-id={subject.id}
-          >            <subject.icon size={isMobile ? 48 : 64} />
-            <SubjectTitle>{subject.name}</SubjectTitle>
-            <ShortcutHint>(Press {subject.name[0]})</ShortcutHint>
-          </SubjectCard>
-        ))}
+        {filteredAndSortedSubjects.map((subject, index) => {
+          const lastPlayed = user.gameHistory?.[subject.id] || 0;
+          const isNew = lastPlayed === 0;
+
+          return (
+            <SubjectCard
+              key={subject.id}
+              $color={subject.color}
+              $active={selectedIndex === index}
+              onClick={() => handleAction(subject.id)}
+              data-testid="subject-card"
+              data-subject-id={subject.id}
+            >
+              {isNew && (
+                <Badge $color="#ffd700">
+                  <Sparkles size={12} /> NEW
+                </Badge>
+              )}
+              {!isNew && sortBy === 'recent' && (
+                <Badge $color="#2196f3">
+                  <ClockIcon size={12} /> Played
+                </Badge>
+              )}
+              <subject.icon size={isMobile ? 48 : 64} />
+              <SubjectTitle>{subject.name}</SubjectTitle>
+              <ShortcutHint>(Press {subject.name[0]})</ShortcutHint>
+            </SubjectCard>
+          );
+        })}
       </SubjectGrid>
     </DashboardContainer>
   );

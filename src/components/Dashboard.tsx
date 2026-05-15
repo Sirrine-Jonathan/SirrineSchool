@@ -224,7 +224,8 @@ const Dashboard: React.FC = () => {
     { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0' },
     ...(!isMobile ? [
       { id: 'typing', name: 'Astro Typer', icon: Keyboard, color: '#ff9800' },
-      { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63' }
+      { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63' },
+      { id: 'shortkey', name: 'Shortkey Samurai', icon: Keyboard, color: '#c0392b' }
     ] : []),
   ], [isMobile]);
 
@@ -257,6 +258,8 @@ const Dashboard: React.FC = () => {
       navigate('/typing');
     } else if (id === 'fast-finger') {
       navigate('/typing/fast-finger');
+    } else if (id === 'shortkey') {
+      navigate('/typing/shortkey');
     }
   }, [navigate]);
 
@@ -304,6 +307,8 @@ const Dashboard: React.FC = () => {
         handleAction('typing');
       } else if (e.key.toLowerCase() === 'y' && !isMobile) {
         handleAction('fast-finger');
+      } else if (e.key.toLowerCase() === 'u' && !isMobile) {
+        handleAction('shortkey');
       } else if (e.key.toLowerCase() === 's') {
         setShowSettings(true);
       }
@@ -353,4 +358,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-

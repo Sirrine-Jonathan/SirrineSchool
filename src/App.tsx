@@ -12,6 +12,7 @@ import PatternPop from './games/math/PatternPop';
 import ClockQuest from './games/math/ClockQuest';
 import AstroTyper from './games/typing/AstroTyper';
 import FastFingerFrenzy from './games/typing/FastFingerFrenzy';
+import ShortkeySamurai from './games/typing/ShortkeySamurai';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
@@ -72,6 +73,10 @@ const AppRoutes = () => {
       <Route 
         path="/typing/fast-finger" 
         element={currentUser ? <FastFingerFrenzy /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/typing/shortkey" 
+        element={currentUser ? <ShortkeySamurai /> : <Navigate to="/" />} 
       />
       <Route 
         path="/coding" 

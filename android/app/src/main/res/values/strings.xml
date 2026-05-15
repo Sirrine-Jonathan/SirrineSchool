@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SirrineSchool</string>
+    <string name="title_activity_main">SirrineSchool</string>
+    <string name="package_name">com.sirrine.school</string>
+    <string name="custom_url_scheme">com.sirrine.school</string>
+</resources>

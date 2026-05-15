@@ -11,9 +11,14 @@
     "test": "playwright test",
     "start": "serve -s dist -l $PORT",
     "host": "vite --host",
-    "autodev": "powershell -ExecutionPolicy Bypass -File ./autodev.ps1"
+    "autodev": "node autodev.js",
+    "mobile:sync": "npm run build && npx cap sync",
+    "mobile:assets": "npx @capacitor/assets generate --android",
+    "mobile:version": "node bump-version.js"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -26,6 +31,8 @@
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.3.4",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.1",
     "@types/react": "^18.2.43",

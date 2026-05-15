@@ -1,3 +1,4 @@
+import MoneyMarket from "./games/math/MoneyMarket";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserProvider, useUser } from './hooks/useUser';
@@ -45,6 +46,10 @@ const AppRoutes = () => {
       <Route 
         path="/math/counting" 
         element={currentUser ? <Counting /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/math/money-market" 
+        element={currentUser ? <MoneyMarket /> : <Navigate to="/" />} 
       />
       <Route 
         path="/math/multiplication" 

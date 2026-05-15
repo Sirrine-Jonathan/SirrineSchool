@@ -328,6 +328,7 @@ const Dashboard: React.FC = () => {
   const user = currentUser ? users[currentUser] : null;
 
   const subjects = React.useMemo(() => [
+    { id: 'money-market', name: 'Money Market', icon: Calculator, color: '#f39c12', category: 'Math', path: '/math/money-market' },
     { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12', category: 'Math', path: '/math/counting' },
     { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63', category: 'Math', path: '/math/arithmetic' },
     { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722', category: 'Math', path: '/math/fractions' },

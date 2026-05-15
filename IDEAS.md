@@ -29,3 +29,9 @@
 - [x] **Code Caterpillar:** Type simple logic commands (Up, Down, Left, Right) to guide a caterpillar to food.
 - [x] **Fast Finger Frenzy:** Type common words as they appear on screen to beat a timer.
 - [x] **Short-key Samurai:** Learn common keyboard shortcuts (Ctrl+C, Ctrl+V, etc.) by pressing them at the right time.
+
+## Memory & Logic
+- **Card Match:** A classic memory game where children flip cards to find pairs. 
+    - *Variants:* Match uppercase to lowercase letters, match a math problem to its answer, or match colors to their names.
+- **Sequence Repeat:** A "Simon Says" style game where children must repeat a growing sequence of colors, sounds, or numbers.
+- **Hidden Object:** Look at a scene with several objects for 10 seconds, then identify which object was removed or changed.

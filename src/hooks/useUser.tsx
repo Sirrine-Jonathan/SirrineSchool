@@ -15,6 +15,7 @@ interface UserProfile {
   inventory: string[];
   stats: UserStats;
   gameHistory: Record<string, number>; // gameId -> lastPlayedTimestamp
+  masteredGames: Record<string, boolean>; // gameId -> isMastered
 }
 
 interface AppSettings {
@@ -33,6 +34,8 @@ interface UserContextType {
   addXP: (userName: string, amount: number) => void;
   updateSettings: (newSettings: Partial<AppSettings>) => void;
   recordGamePlay: (userName: string, gameId: string) => void;
+  recordGameWin: (userName: string, gameId: string) => void;
+  resetAllProgress: (userName: string) => void;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -50,6 +53,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     inventory: [],
     stats: {},
     gameHistory: {},
+    masteredGames: {},
   },
   grace: {
     name: 'Grace',
@@ -59,6 +63,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     inventory: [],
     stats: {},
     gameHistory: {},
+    masteredGames: {},
   },
   charlie: {
     name: 'Charlie',
@@ -68,6 +73,7 @@ const INITIAL_USERS: Record<string, UserProfile> = {
     inventory: [],
     stats: {},
     gameHistory: {},
+    masteredGames: {},
   },
 };
 
@@ -85,10 +91,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!parsed.player) {
       parsed.player = INITIAL_USERS.player;
     }
-    // Ensure gameHistory exists for all users
+    // Ensure gameHistory and masteredGames exist for all users
     Object.keys(parsed).forEach(key => {
       if (!parsed[key].gameHistory) {
         parsed[key].gameHistory = {};
+      }
+      if (!parsed[key].masteredGames) {
+        parsed[key].masteredGames = {};
       }
     });
     return parsed;
@@ -162,8 +171,46 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
+  const recordGameWin = (userName: string, gameId: string) => {
+    setUsers(prev => ({
+      ...prev,
+      [userName]: {
+        ...prev[userName],
+        masteredGames: {
+          ...prev[userName].masteredGames,
+          [gameId]: true
+        }
+      }
+    }));
+  };
+
+  const resetAllProgress = (userName: string) => {
+    setUsers(prev => ({
+      ...prev,
+      [userName]: {
+        ...prev[userName],
+        xp: 0,
+        gameHistory: {},
+        masteredGames: {},
+        stats: {}
+      }
+    }));
+  };
+
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, users, settings, updateUserStats, updateUserProfile, addXP, updateSettings, recordGamePlay }}>
+    <UserContext.Provider value={{ 
+      currentUser, 
+      setCurrentUser, 
+      users, 
+      settings, 
+      updateUserStats, 
+      updateUserProfile, 
+      addXP, 
+      updateSettings, 
+      recordGamePlay,
+      recordGameWin,
+      resetAllProgress
+    }}>
       {children}
     </UserContext.Provider>
   );

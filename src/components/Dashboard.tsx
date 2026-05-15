@@ -348,6 +348,11 @@ const Dashboard: React.FC = () => {
     ] : []),
   ], [isMobile]);
 
+  const masteredCount = React.useMemo(() => {
+    if (!user?.masteredGames) return 0;
+    return Object.values(user.masteredGames).filter(Boolean).length;
+  }, [user?.masteredGames]);
+
   const categories = React.useMemo(() => {
     const cats = new Set(subjects.map(s => s.category));
     return ['All', ...Array.from(cats)];
@@ -435,9 +440,16 @@ const Dashboard: React.FC = () => {
         <UserInfo>
           <Award size={32} color="#ffd700" />
           <h2 style={{ margin: 0 }}>Sirrine School</h2>
-          <XPBadge>
-            <Award size={16} /> {user.xp} XP
-          </XPBadge>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <XPBadge>
+              <Award size={16} /> {user.xp} XP
+            </XPBadge>
+            {masteredCount > 0 && (
+              <XPBadge style={{ background: '#4caf50', color: 'white' }}>
+                <Sparkles size={16} /> {masteredCount} Won!
+              </XPBadge>
+            )}
+          </div>
         </UserInfo>
         <ActionButtons>
           <LogoutButton onClick={() => setShowSettings(true)}>
@@ -491,6 +503,7 @@ const Dashboard: React.FC = () => {
         {filteredAndSortedSubjects.map((subject, index) => {
           const lastPlayed = user.gameHistory?.[subject.id] || 0;
           const isNew = lastPlayed === 0;
+          const isMastered = user.masteredGames?.[subject.id];
 
           return (
             <SubjectCard
@@ -501,12 +514,17 @@ const Dashboard: React.FC = () => {
               data-testid="subject-card"
               data-subject-id={subject.id}
             >
-              {isNew && (
+              {isMastered && (
+                <Badge $color="#4caf50" style={{ color: 'white' }}>
+                  <Award size={12} /> WON!
+                </Badge>
+              )}
+              {isNew && !isMastered && (
                 <Badge $color="#ffd700">
                   <Sparkles size={12} /> NEW
                 </Badge>
               )}
-              {!isNew && sortBy === 'recent' && (
+              {!isNew && !isMastered && sortBy === 'recent' && (
                 <Badge $color="#2196f3">
                   <ClockIcon size={12} /> Played
                 </Badge>

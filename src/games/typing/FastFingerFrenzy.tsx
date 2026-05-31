@@ -185,7 +185,7 @@ const INITIAL_WORD_TIME = 5; // seconds per word initially
 
 const FastFingerFrenzy: React.FC = () => {
   const navigate = useNavigate();
-  const { currentUser, addXP, settings } = useUser();
+  const { currentUser, addXP, settings, recordGameWin } = useUser();
   
   const [gameState, setGameState] = useState<'playing' | 'finished'>('playing');
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -229,6 +229,15 @@ const FastFingerFrenzy: React.FC = () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [gameState]);
+
+  // Finish Game & Save Win
+  useEffect(() => {
+    if (gameState === 'finished' && currentUser) {
+      if (score >= 10) {
+        recordGameWin(currentUser, 'fast-finger');
+      }
+    }
+  }, [gameState, currentUser]);
 
   // Word timer
   useEffect(() => {

@@ -148,11 +148,17 @@ const FilterPill = styled.button<{ $active: boolean, $color?: string }>`
 
 const SortContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.6);
+  width: 100%;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 `;
 
 const SortButton = styled.button<{ $active: boolean }>`
@@ -322,6 +328,7 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   const [sortBy, setSortBy] = React.useState<'alphabetical' | 'recent'>('alphabetical');
+  const [showFilter, setShowFilter] = React.useState<'all' | 'unwon'>('all');
   
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -370,7 +377,9 @@ const Dashboard: React.FC = () => {
     let result = subjects.filter(s => {
       const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const isMastered = user?.masteredGames?.[s.id];
+      const matchesStatus = showFilter === 'all' || !isMastered;
+      return matchesSearch && matchesCategory && matchesStatus;
     });
 
     result.sort((a, b) => {
@@ -389,7 +398,7 @@ const Dashboard: React.FC = () => {
     });
 
     return result;
-  }, [subjects, searchQuery, selectedCategory, sortBy, user?.gameHistory]);
+  }, [subjects, searchQuery, selectedCategory, sortBy, showFilter, user?.gameHistory, user?.masteredGames]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -483,19 +492,37 @@ const Dashboard: React.FC = () => {
         </FilterPills>
 
         <SortContainer>
-          <span>Sort by:</span>
-          <SortButton 
-            $active={sortBy === 'alphabetical'} 
-            onClick={() => setSortBy('alphabetical')}
-          >
-            A-Z
-          </SortButton>
-          <SortButton 
-            $active={sortBy === 'recent'} 
-            onClick={() => setSortBy('recent')}
-          >
-            Recent
-          </SortButton>
+          <ButtonGroup>
+            <span>Show:</span>
+            <SortButton 
+              $active={showFilter === 'all'} 
+              onClick={() => setShowFilter('all')}
+            >
+              All
+            </SortButton>
+            <SortButton 
+              $active={showFilter === 'unwon'} 
+              onClick={() => setShowFilter('unwon')}
+            >
+              Not Won
+            </SortButton>
+          </ButtonGroup>
+
+          <ButtonGroup>
+            <span>Sort by:</span>
+            <SortButton 
+              $active={sortBy === 'alphabetical'} 
+              onClick={() => setSortBy('alphabetical')}
+            >
+              A-Z
+            </SortButton>
+            <SortButton 
+              $active={sortBy === 'recent'} 
+              onClick={() => setSortBy('recent')}
+            >
+              Recent
+            </SortButton>
+          </ButtonGroup>
         </SortContainer>
       </ControlsContainer>
 

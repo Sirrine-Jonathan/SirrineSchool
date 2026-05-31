@@ -179,7 +179,8 @@ const Multiplication: React.FC = () => {
   const [itemsPerCrate, setItemsPerCrate] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const generateProblem = () => {
@@ -202,7 +203,14 @@ const Multiplication: React.FC = () => {
     const correct = numCrates * itemsPerCrate;
     if (parseInt(userAnswer) === correct) {
       setFeedback('LIFT OFF! 🚀');
-      if (currentUser) addXP(currentUser, 20);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (currentUser) {
+        addXP(currentUser, 20);
+        if (newScore >= 5) {
+          recordGameWin(currentUser, 'multiplication');
+        }
+      }
       setTimeout(generateProblem, 2000);
     } else {
       setFeedback('Check your math! 🛸');

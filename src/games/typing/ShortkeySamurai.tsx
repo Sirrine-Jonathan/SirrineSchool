@@ -211,7 +211,7 @@ const GAME_DURATION = 60;
 
 const ShortkeySamurai: React.FC = () => {
   const navigate = useNavigate();
-  const { currentUser, addXP } = useUser();
+  const { currentUser, addXP, recordGameWin } = useUser();
   
   const [gameState, setGameState] = useState<'playing' | 'finished'>('playing');
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -237,6 +237,15 @@ const ShortkeySamurai: React.FC = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, [gameState]);
+
+  // Finish Game & Save Win
+  useEffect(() => {
+    if (gameState === 'finished' && currentUser) {
+      if (score >= 10) {
+        recordGameWin(currentUser, 'shortkey');
+      }
+    }
+  }, [gameState, currentUser]);
 
   // Input Handling
   useEffect(() => {

@@ -295,7 +295,8 @@ const CodeCaterpillar: React.FC = () => {
   const [program, setProgram] = useState<CommandBlock[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const MAX_COMMANDS = 6;
 
@@ -415,7 +416,14 @@ const CodeCaterpillar: React.FC = () => {
       
       if (ate) {
         setFeedback('YUM! 🍎');
-        if (currentUser) addXP(currentUser, 15);
+        const newScore = score + 1;
+        setScore(newScore);
+        if (currentUser) {
+          addXP(currentUser, 15);
+          if (newScore >= 3) {
+            recordGameWin(currentUser, 'coding');
+          }
+        }
         spawnFood(currentCat);
         setTimeout(() => setFeedback(null), 1000);
         break;

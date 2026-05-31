@@ -299,7 +299,7 @@ const GAME_DURATION = 60; // 1 minute is plenty for a 7 year old
 
 const AstroTyper: React.FC = () => {
   const navigate = useNavigate();
-  const { currentUser, users, addXP, updateUserStats, settings } = useUser();
+  const { currentUser, users, addXP, updateUserStats, settings, recordGameWin } = useUser();
   
   // Game State
   const [gameState, setGameState] = useState<'playing' | 'finished'>('playing');
@@ -353,6 +353,9 @@ const AstroTyper: React.FC = () => {
       const newHistory = [score, ...history].slice(0, 5); // Keep last 5
       updateUserStats(currentUser, { typing_history: newHistory });
       addXP(currentUser, score * 2); // Bonus XP
+      if (score >= 10) {
+        recordGameWin(currentUser, 'typing');
+      }
     }
   }, [gameState, currentUser]); // score is stable when finished
 

@@ -156,8 +156,9 @@ const Counting: React.FC = () => {
   const [targetCount, setTargetCount] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { addXP, currentUser } = useUser();
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const generateNewProblem = useCallback((currentMax: number) => {
     const newCount = Math.floor(Math.random() * currentMax) + 1;
@@ -177,7 +178,14 @@ const Counting: React.FC = () => {
     const answerNum = parseInt(userAnswer, 10);
     if (answerNum === targetCount) {
       setFeedback('SMASH! 🏎️');
-      if (currentUser) addXP(currentUser, 10);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (currentUser) {
+        addXP(currentUser, 10);
+        if (newScore >= 5) {
+          recordGameWin(currentUser, 'counting');
+        }
+      }
       setTimeout(() => {
         setFeedback(null);
         generateNewProblem(maxRange);

@@ -207,7 +207,8 @@ const SkateboardWordMatch: React.FC = () => {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const speak = useCallback((text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -248,7 +249,14 @@ const SkateboardWordMatch: React.FC = () => {
     if (word === target) {
       setFeedback('KICKFLIP! 🛹');
       speak('Kickflip!');
-      if (currentUser) addXP(currentUser, 20);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (currentUser) {
+        addXP(currentUser, 20);
+        if (newScore >= 5) {
+          recordGameWin(currentUser, 'reading');
+        }
+      }
       setTimeout(generateProblem, 2000);
     } else {
       setFeedback('Try again! 🔄');

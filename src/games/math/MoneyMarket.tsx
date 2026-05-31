@@ -462,7 +462,7 @@ const MoneyMarket: React.FC = () => {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [stepsCompleted, setStepsCompleted] = useState(0);
   const [showTrophy, setShowTrophy] = useState(false);
-  const { addXP, currentUser } = useUser();
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const TOTAL_STEPS = 10;
 
@@ -496,6 +496,7 @@ const MoneyMarket: React.FC = () => {
       if (newSteps >= TOTAL_STEPS) {
         setStepsCompleted(TOTAL_STEPS);
         setShowTrophy(true);
+        if (currentUser) recordGameWin(currentUser, 'money-market');
         setTimeout(() => {
           setShowTrophy(false);
           setStepsCompleted(0);

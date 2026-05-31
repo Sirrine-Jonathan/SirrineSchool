@@ -168,7 +168,8 @@ const RhymeTime: React.FC = () => {
   const [options, setOptions] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const speak = useCallback((text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -217,7 +218,14 @@ const RhymeTime: React.FC = () => {
     if (word === rhymingWord) {
       setFeedback('PERFECT RHYME! 🎵');
       speak(`${word} rhymes with ${target}!`);
-      if (currentUser) addXP(currentUser, 20);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (currentUser) {
+        addXP(currentUser, 20);
+        if (newScore >= 5) {
+          recordGameWin(currentUser, 'rhyme');
+        }
+      }
       setTimeout(generateProblem, 2500);
     } else {
       setFeedback('Try again! 🔄');

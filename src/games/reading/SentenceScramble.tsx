@@ -174,7 +174,8 @@ const SentenceScramble: React.FC = () => {
   const [currentSentence, setCurrentSentence] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const speak = useCallback((text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -227,7 +228,14 @@ const SentenceScramble: React.FC = () => {
         setFeedback("AWESOME! 🌟");
         speak("You did it!");
         speak(targetSentence.join(' '));
-        if (currentUser) addXP(currentUser, 30);
+        const newScore = score + 1;
+        setScore(newScore);
+        if (currentUser) {
+          addXP(currentUser, 30);
+          if (newScore >= 5) {
+            recordGameWin(currentUser, 'scramble');
+          }
+        }
         setTimeout(generateProblem, 3000);
       } else {
         // Find next unused index for selection

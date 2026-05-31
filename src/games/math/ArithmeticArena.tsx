@@ -240,7 +240,7 @@ const ArithmeticArena: React.FC = () => {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [stepsCompleted, setStepsCompleted] = useState(0);
   const [showTrophy, setShowTrophy] = useState(false);
-  const { addXP, currentUser, users } = useUser();
+  const { addXP, currentUser, users, recordGameWin } = useUser();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const TOTAL_STEPS = 10;
@@ -288,6 +288,7 @@ const ArithmeticArena: React.FC = () => {
       if (newSteps >= TOTAL_STEPS) {
         setStepsCompleted(0);
         setShowTrophy(true);
+        if (currentUser) recordGameWin(currentUser, 'arithmetic');
       } else {
         setStepsCompleted(newSteps);
       }

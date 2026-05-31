@@ -159,7 +159,7 @@ const PatternPop: React.FC = () => {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showTrophy, setShowTrophy] = useState(false);
-  const { addXP, currentUser, users } = useUser();
+  const { addXP, currentUser, users, recordGameWin } = useUser();
 
   const TOTAL_LEVELS = 10;
   const user = currentUser ? users[currentUser] : null;
@@ -220,6 +220,7 @@ const PatternPop: React.FC = () => {
       const newScore = score + 1;
       if (newScore >= TOTAL_LEVELS) {
         setShowTrophy(true);
+        if (currentUser) recordGameWin(currentUser, 'patterns');
       } else {
         setScore(newScore);
       }

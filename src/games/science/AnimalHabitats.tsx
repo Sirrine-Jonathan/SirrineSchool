@@ -165,7 +165,8 @@ const AnimalHabitats: React.FC = () => {
   const [currentAnimal, setCurrentAnimal] = useState<Animal | null>(null);
   const [feedback, setFeedback] = useState<{ text: string, color: string } | null>(null);
   const [isOver, setIsOver] = useState<HabitatType | null>(null);
-  const { addXP, currentUser } = useUser();
+  const [score, setScore] = useState(0);
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const getNewAnimal = useCallback(() => {
     const randomAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
@@ -201,7 +202,14 @@ const AnimalHabitats: React.FC = () => {
     if (droppedOn) {
       if (droppedOn === currentAnimal.habitat) {
         setFeedback({ text: 'AMAZING! 🌟', color: '#4caf50' });
-        if (currentUser) addXP(currentUser, 15);
+        const newScore = score + 1;
+        setScore(newScore);
+        if (currentUser) {
+          addXP(currentUser, 15);
+          if (newScore >= 5) {
+            recordGameWin(currentUser, 'habitats');
+          }
+        }
         setTimeout(() => {
           setFeedback(null);
           getNewAnimal();

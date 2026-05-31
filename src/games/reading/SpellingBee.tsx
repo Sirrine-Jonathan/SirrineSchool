@@ -131,7 +131,7 @@ const SpellingBee: React.FC = () => {
   const [feedback, setFeedback] = useState<{ isCorrect: boolean, text: string } | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const { addXP, currentUser } = useUser();
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const startNewGame = useCallback(() => {
     const shuffled = [...WORD_LIST].sort(() => Math.random() - 0.5).slice(0, 5);
@@ -180,6 +180,10 @@ const SpellingBee: React.FC = () => {
         setFeedback(null);
       } else {
         setIsGameOver(true);
+        const finalScore = score + (correct ? 1 : 0);
+        if (currentUser && finalScore >= 4) {
+          recordGameWin(currentUser, 'spelling');
+        }
       }
     }, 2000);
   };

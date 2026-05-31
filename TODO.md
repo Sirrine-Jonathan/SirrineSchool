@@ -10,8 +10,8 @@
 - [x] Track game play history in browser storage to show "Recent Games" and enable sorting (Most Recent, Alphabetical A-Z/Z-A).
 - [x] Highlight "New" (unplayed) games and lift them to the top of the dashboard list automatically.
 - [x] Implement "Money Market" math game (shopping and making change).
-- [ ] Show which games have been won on the dashboard.
-- [ ] Allow filtering to games that have not been won.
+- [x] Show which games have been won on the dashboard.
+- [x] Allow filtering to games that have not been won.
 - [ ] Implement "Number Line Runner" math game (addition/subtraction on a number line).
 - [ ] Implement "Syllable Smash" reading game (counting syllables).
 - [ ] Implement "Planet Picker" science game.

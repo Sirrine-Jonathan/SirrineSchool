@@ -161,7 +161,7 @@ const ClockQuest: React.FC = () => {
   const [currentTime, setCurrentTime] = useState({ hour: 12, minute: 0 });
   const [feedback, setFeedback] = useState<string | null>(null);
   const [score, setScore] = useState(0);
-  const { addXP, currentUser } = useUser();
+  const { addXP, currentUser, recordGameWin } = useUser();
 
   const generateTargetTime = () => {
     const hour = Math.floor(Math.random() * 12) + 1;
@@ -198,8 +198,14 @@ const ClockQuest: React.FC = () => {
   const handleSubmit = () => {
     if (currentTime.hour === targetTime.hour && currentTime.minute === targetTime.minute) {
       setFeedback('PERFECT! ⭐');
-      setScore(prev => prev + 1);
-      if (currentUser) addXP(currentUser, 20);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (currentUser) {
+        addXP(currentUser, 20);
+        if (newScore >= 5) {
+          recordGameWin(currentUser, 'clock');
+        }
+      }
       setTimeout(() => {
         generateTargetTime();
       }, 2000);

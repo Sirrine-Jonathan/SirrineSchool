@@ -218,7 +218,7 @@ const Slice = ({ index, total, isSelected, onClick, color, toppingEmoji }: {
 };
 
 const FractionPizza: React.FC = () => {
-  const { addXP, currentUser, users } = useUser();
+  const { addXP, currentUser, users, recordGameWin } = useUser();
   const [target, setTarget] = useState({ numerator: 1, denominator: 2 });
   const [selectedSlices, setSelectedSlices] = useState<Set<number>>(new Set());
   const [stepsCompleted, setStepsCompleted] = useState(0);
@@ -266,6 +266,7 @@ const FractionPizza: React.FC = () => {
       const newSteps = stepsCompleted + 1;
       if (newSteps >= TOTAL_STEPS) {
         setTimeout(() => setShowTrophy(true), 1000);
+        if (currentUser) recordGameWin(currentUser, 'fractions');
       } else {
         setStepsCompleted(newSteps);
         setTimeout(generateProblem, 1500);

@@ -337,6 +337,7 @@ const Dashboard: React.FC = () => {
   const subjects = React.useMemo(() => [
     { id: 'money-market', name: 'Money Market', icon: Calculator, color: '#f39c12', category: 'Math', path: '/math/money-market' },
     { id: 'counting', name: 'Counting', icon: Calculator, color: '#f39c12', category: 'Math', path: '/math/counting' },
+    { id: 'number-line', name: 'Number Line', icon: Calculator, color: '#9c27b0', category: 'Math', path: '/math/number-line' },
     { id: 'arithmetic', name: 'Arithmetic', icon: Calculator, color: '#e91e63', category: 'Math', path: '/math/arithmetic' },
     { id: 'fractions', name: 'Fractions', icon: Calculator, color: '#ff5722', category: 'Math', path: '/math/fractions' },
     { id: 'clock', name: 'Clock', icon: Calculator, color: '#00bcd4', category: 'Math', path: '/math/clock' },
@@ -347,7 +348,8 @@ const Dashboard: React.FC = () => {
     { id: 'spelling', name: 'Spelling', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading/spelling-bee' },
     { id: 'scramble', name: 'Scramble', icon: BookOpen, color: '#2196f3', category: 'Reading', path: '/reading/sentence-scramble' },
     { id: 'habitats', name: 'Habitats', icon: FlaskConical, color: '#4caf50', category: 'Science', path: '/science/habitats' },
-    { id: 'coding', name: 'Coding', icon: Terminal, color: '#9c27b0', category: 'Coding', path: '/coding' },
+    { id: 'coding', name: 'Code Caterpillar', icon: Terminal, color: '#9c27b0', category: 'Coding', path: '/coding' },
+    { id: 'robocode', name: 'RoboCode Neon', icon: Terminal, color: '#00e5ff', category: 'Coding', path: '/coding/robocode' },
     ...(!isMobile ? [
       { id: 'typing', name: 'Astro Typer', icon: Keyboard, color: '#ff9800', category: 'Typing', path: '/typing' },
       { id: 'fast-finger', name: 'Fast Finger', icon: Keyboard, color: '#e91e63', category: 'Typing', path: '/typing/fast-finger' },

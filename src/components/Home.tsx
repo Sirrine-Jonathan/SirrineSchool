@@ -148,7 +148,7 @@ const Home: React.FC = () => {
           data-testid="user-card"
         >
           <Rocket size={64} color="#e94560" />
-          <Name>{users.grace.name}</Name>
+          <Name>{users.grace?.name || 'Grace'}</Name>
           <ShortcutHint>(Press G)</ShortcutHint>
         </UserCard>
         <UserCard 
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
           data-testid="user-card"
         >
           <Truck size={64} color="#f39c12" />
-          <Name>{users.charlie.name}</Name>
+          <Name>{users.charlie?.name || 'Charlie'}</Name>
           <ShortcutHint>(Press C)</ShortcutHint>
         </UserCard>
       </UserGrid>

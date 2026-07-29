@@ -125,6 +125,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [currentUser]);
 
   useEffect(() => {
+    if (currentUser && !users[currentUser]) {
+      const firstUser = Object.keys(users)[0] || 'player';
+      setCurrentUser(firstUser);
+    }
+  }, [currentUser, users]);
+
+  useEffect(() => {
     localStorage.setItem('sirrine_users', JSON.stringify(users));
   }, [users]);
 

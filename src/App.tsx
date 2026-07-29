@@ -6,6 +6,7 @@ import GlobalStarfield from './components/GlobalStarfield';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Counting from './games/math/Counting';
+import NumberLineRunner from './games/math/NumberLineRunner';
 import Multiplication from './games/math/Multiplication';
 import ArithmeticArena from './games/math/ArithmeticArena';
 import FractionPizza from './games/math/FractionPizza';
@@ -15,6 +16,7 @@ import AstroTyper from './games/typing/AstroTyper';
 import FastFingerFrenzy from './games/typing/FastFingerFrenzy';
 import ShortkeySamurai from './games/typing/ShortkeySamurai';
 import CodeCaterpillar from './games/coding/CodeCaterpillar';
+import RoboCodeNeon from './games/coding/RoboCodeNeon';
 import SkateboardWordMatch from './games/reading/SkateboardSoundMatch';
 import RhymeTime from './games/reading/RhymeTime';
 import SpellingBee from './games/reading/SpellingBee';
@@ -46,6 +48,10 @@ const AppRoutes = () => {
       <Route 
         path="/math/counting" 
         element={currentUser ? <Counting /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/math/number-line" 
+        element={currentUser ? <NumberLineRunner /> : <Navigate to="/" />} 
       />
       <Route 
         path="/math/money-market" 
@@ -86,6 +92,10 @@ const AppRoutes = () => {
       <Route 
         path="/coding" 
         element={currentUser ? <CodeCaterpillar /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/coding/robocode" 
+        element={currentUser ? <RoboCodeNeon /> : <Navigate to="/" />} 
       />
       <Route 
         path="/reading" 

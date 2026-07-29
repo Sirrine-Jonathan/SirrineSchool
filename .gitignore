@@ -26,3 +26,9 @@ dist-ssr
 # Test results
 test-results/
 
+# Gemini agent worktrees
+.gemini/
+
+# Dev builds
+dev-dist/
+

@@ -935,6 +935,117 @@ const LEVELS: Level[] = [
       "The ultimate circuit labyrinth! Traverse the perimeter, capture all three power cores, and guide your drone into the central hatch.",
     hint: "Loop along the outer perimeter to acquire all cores. Look for a gap at (3,5) to navigate into the center portal!",
   },
+  {
+    id: 6,
+    name: "Neon Corridor",
+    gridSize: 7,
+    startPos: { x: 0, y: 6 },
+    startHeading: 0, // facing Up
+    portalPos: { x: 6, y: 0 },
+    cores: [
+      { x: 0, y: 1, collected: false },
+      { x: 4, y: 3, collected: false },
+    ],
+    walls: [
+      { x: 1, y: 6 }, { x: 1, y: 5 }, { x: 1, y: 4 }, { x: 1, y: 3 }, { x: 1, y: 2 },
+      { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }, { x: 5, y: 3 },
+      { x: 5, y: 2 }, { x: 5, y: 1 }, { x: 5, y: 0 },
+      { x: 3, y: 6 }, { x: 3, y: 5 }, { x: 3, y: 4 }
+    ],
+    description:
+      "Navigate through the tight Neon Corridor. Precise turns and spacing are required to avoid wall collisions.",
+    hint: "Fly straight up to (0,0), turn right to (2,0), turn right to go down, collect the core, and zig-zag your way to the portal!",
+  },
+  {
+    id: 7,
+    name: "Warp Gate Matrix",
+    gridSize: 8,
+    startPos: { x: 0, y: 7 },
+    startHeading: 90, // facing Right
+    portalPos: { x: 7, y: 0 },
+    cores: [
+      { x: 4, y: 4, collected: false },
+      { x: 3, y: 2, collected: false },
+    ],
+    walls: [
+      { x: 0, y: 3 }, { x: 1, y: 3 }, { x: 2, y: 3 }, { x: 3, y: 3 },
+      { x: 4, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3 }, { x: 7, y: 3 }
+    ],
+    teleporters: [
+      { from: { x: 3, y: 7 }, to: { x: 3, y: 4 } },
+      { from: { x: 4, y: 5 }, to: { x: 4, y: 1 } }
+    ],
+    description:
+      "A grid split in two by a horizontal barrier. Use the primary green Warp Gate to cross over and recover the quantum cores.",
+    hint: "Warp from (3,7) to (3,4), grab the core, step onto the second warp gate at (4,5) to teleport to (4,1), and head to the portal!",
+  },
+  {
+    id: 8,
+    name: "The Infinity Loop",
+    gridSize: 8,
+    startPos: { x: 3, y: 6 },
+    startHeading: 0, // facing Up
+    portalPos: { x: 3, y: 6 },
+    cores: [
+      { x: 1, y: 3, collected: false },
+      { x: 6, y: 3, collected: false },
+    ],
+    walls: [
+      { x: 3, y: 2 }, { x: 3, y: 3 }, { x: 3, y: 4 }, { x: 3, y: 5 },
+      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 0 }, { x: 6, y: 0 }, { x: 7, y: 0 },
+      { x: 0, y: 7 }, { x: 1, y: 7 }, { x: 2, y: 7 }, { x: 4, y: 7 }, { x: 5, y: 7 }, { x: 6, y: 7 }, { x: 7, y: 7 },
+      { x: 0, y: 3 }, { x: 7, y: 3 }
+    ],
+    description:
+      "A double-loop trajectory! Travel in a figure-8 structure around the central walls to collect both outer power cores.",
+    hint: "Write a function for a rectangular loop path, then call it twice with opposite directions to trace both loops of the infinity symbol!",
+  },
+  {
+    id: 9,
+    name: "Crossroad Conundrum",
+    gridSize: 7,
+    startPos: { x: 3, y: 3 },
+    startHeading: 0, // facing Up
+    portalPos: { x: 3, y: 3 },
+    cores: [
+      { x: 1, y: 1, collected: false },
+      { x: 5, y: 1, collected: false },
+      { x: 1, y: 5, collected: false },
+      { x: 5, y: 5, collected: false },
+    ],
+    walls: [
+      { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 },
+      { x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 },
+      { x: 2, y: 3 }, { x: 4, y: 3 }
+    ],
+    description:
+      "You start in the secure center, but the power cores are trapped in the four isolated corners of the circuit board.",
+    hint: "Program a function to fly out, grab a core, and return. Loop this function 4 times, turning 90 degrees each time to sweep all four corners!",
+  },
+  {
+    id: 10,
+    name: "The Neon Labyrinth",
+    gridSize: 9,
+    startPos: { x: 0, y: 8 },
+    startHeading: 0, // facing Up
+    portalPos: { x: 8, y: 0 },
+    cores: [
+      { x: 0, y: 2, collected: false },
+      { x: 4, y: 4, collected: false },
+      { x: 8, y: 6, collected: false },
+    ],
+    walls: [
+      { x: 1, y: 8 }, { x: 1, y: 7 }, { x: 1, y: 6 }, { x: 1, y: 5 }, { x: 1, y: 4 }, { x: 1, y: 2 }, { x: 1, y: 1 },
+      { x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }, { x: 3, y: 6 }, { x: 3, y: 7 }, { x: 3, y: 8 },
+      { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }, { x: 5, y: 2 }, { x: 6, y: 2 }, { x: 7, y: 2 },
+      { x: 5, y: 4 }, { x: 5, y: 5 }, { x: 5, y: 6 }, { x: 5, y: 7 }, { x: 5, y: 8 },
+      { x: 6, y: 4 }, { x: 7, y: 4 }, { x: 7, y: 5 }, { x: 7, y: 6 }, { x: 7, y: 7 },
+      { x: 7, y: 0 }, { x: 7, y: 1 }
+    ],
+    description:
+      "THE NEON LABYRINTH. A complex, winding maze of obstacles. Find the correct sequence of movements, collect all three power cores, and reach the final Portal.",
+    hint: "The maze path goes up, turns right, goes down, enters the center area, walks around the inner loops, and exits at the top right. Use modular repeat loops to keep your script compact!",
+  },
 ];
 
 // --- MAIN COMPONENT ---

@@ -953,6 +953,8 @@ const RoboCodeNeon: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const programSectionRef = useRef<HTMLDivElement | null>(null);
+  const prevCodeBlockCount = useRef(0);
 
   // Load current level
   const currentLevel = useMemo(
@@ -972,6 +974,19 @@ const RoboCodeNeon: React.FC = () => {
     };
     return countBlocks(program);
   }, [program]);
+
+  // Scroll moves area to the bottom when a new block is added/programmed
+  useEffect(() => {
+    if (codeBlockCount > prevCodeBlockCount.current) {
+      if (programSectionRef.current) {
+        programSectionRef.current.scrollTo({
+          top: programSectionRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+    prevCodeBlockCount.current = codeBlockCount;
+  }, [codeBlockCount]);
 
   // Web Audio Synth Sounds
   const playSynth = (
@@ -2250,7 +2265,7 @@ const RoboCodeNeon: React.FC = () => {
                 </ToolboxCard>
               </ToolboxSection>
 
-              <ProgramSection>
+              <ProgramSection ref={programSectionRef}>
                 {program.map((block, idx) => renderBlock(block, idx))}
 
                 {program.length === 0 && (

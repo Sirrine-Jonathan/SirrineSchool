@@ -2312,7 +2312,7 @@ const RoboCodeNeon: React.FC = () => {
               )}
 
               {isEditing && (
-                <LoopToolbar>
+                <LoopToolbar style={{ flexWrap: "wrap", gap: "0.25rem" }}>
                   <span>+ Inside:</span>
                   <LoopToolBtn
                     onClick={() => appendNestedBlock(block.id, "FORWARD")}
@@ -2328,6 +2328,29 @@ const RoboCodeNeon: React.FC = () => {
                     onClick={() => appendNestedBlock(block.id, "TURN_RIGHT")}
                   >
                     <RefreshCw size={10} /> Turn R
+                  </LoopToolBtn>
+                  <LoopToolBtn
+                    onClick={() => appendNestedBlock(block.id, "RANDOM")}
+                  >
+                    <HelpCircle size={10} /> Random
+                  </LoopToolBtn>
+                  <LoopToolBtn
+                    onClick={() => appendNestedBlock(block.id, "CALL_FUNC_1")}
+                    disabled={activeCustomFuncId === "func1"}
+                  >
+                    <Cpu size={10} /> Func 1
+                  </LoopToolBtn>
+                  <LoopToolBtn
+                    onClick={() => appendNestedBlock(block.id, "CALL_FUNC_2")}
+                    disabled={activeCustomFuncId === "func2"}
+                  >
+                    <Cpu size={10} /> Func 2
+                  </LoopToolBtn>
+                  <LoopToolBtn
+                    onClick={() => appendNestedBlock(block.id, "CALL_FUNC_3")}
+                    disabled={activeCustomFuncId === "func3"}
+                  >
+                    <Cpu size={10} /> Func 3
                   </LoopToolBtn>
                 </LoopToolbar>
               )}

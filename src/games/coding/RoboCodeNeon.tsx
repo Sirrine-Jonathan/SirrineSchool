@@ -1346,7 +1346,6 @@ const RoboCodeNeon: React.FC = () => {
     let cy = lvl.startPos.y;
     let cheading = lvl.startHeading;
     let ccollected: { x: number; y: number }[] = [];
-    let hitObstacle = false;
     let won = false;
 
     const addStep = (
@@ -1376,10 +1375,10 @@ const RoboCodeNeon: React.FC = () => {
     });
 
     const runBlocks = (blockList: CommandBlock[], depth = 0, callerId?: string) => {
-      if (depth > 50 || steps.length > 500 || hitObstacle || won) return;
+      if (depth > 50 || steps.length > 500 || won) return;
 
       for (const block of blockList) {
-        if (hitObstacle || won) return;
+        if (won) return;
 
         const currentCallerId = callerId || (block.type.startsWith("CALL_FUNC_") ? block.id : undefined);
 
@@ -1397,69 +1396,61 @@ const RoboCodeNeon: React.FC = () => {
 
           // Border check
           if (nx < 0 || nx >= lvl.gridSize || ny < 0 || ny >= lvl.gridSize) {
-            cx = nx;
-            cy = ny;
-            hitObstacle = true;
             addStep(block.id, "BONK", { callerId: currentCallerId, errorMessage: "OUT OF BOUNDS!" });
-            return;
-          }
+          } else {
+            // Wall check
+            const isWall = lvl.walls.some((w) => w.x === nx && w.y === ny);
+            if (isWall) {
+              addStep(block.id, "BONK", {
+                callerId: currentCallerId,
+                errorMessage: "LASER BLOCK DETECTED!",
+              });
+            } else {
+              cx = nx;
+              cy = ny;
+              addStep(block.id, "FORWARD", { callerId: currentCallerId });
 
-          // Wall check
-          const isWall = lvl.walls.some((w) => w.x === nx && w.y === ny);
-          if (isWall) {
-            cx = nx;
-            cy = ny;
-            hitObstacle = true;
-            addStep(block.id, "BONK", {
-              callerId: currentCallerId,
-              errorMessage: "LASER BLOCK DETECTED!",
-            });
-            return;
-          }
-
-          cx = nx;
-          cy = ny;
-          addStep(block.id, "FORWARD", { callerId: currentCallerId });
-
-          // Teleporter warp check
-          if (lvl.teleporters) {
-            for (const tp of lvl.teleporters) {
-              if (cx === tp.from.x && cy === tp.from.y) {
-                addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
-                cx = tp.to.x;
-                cy = tp.to.y;
-                addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
-                break;
-              } else if (cx === tp.to.x && cy === tp.to.y) {
-                addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
-                cx = tp.from.x;
-                cy = tp.from.y;
-                addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
-                break;
+              // Teleporter warp check
+              if (lvl.teleporters) {
+                for (const tp of lvl.teleporters) {
+                  if (cx === tp.from.x && cy === tp.from.y) {
+                    addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
+                    cx = tp.to.x;
+                    cy = tp.to.y;
+                    addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
+                    break;
+                  } else if (cx === tp.to.x && cy === tp.to.y) {
+                    addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
+                    cx = tp.from.x;
+                    cy = tp.from.y;
+                    addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
+                    break;
+                  }
+                }
               }
-            }
-          }
 
-          // Energy core collection
-          const coreIndex = lvl.cores.findIndex(
-            (c) => c.x === cx && c.y === cy,
-          );
-          if (coreIndex !== -1) {
-            const alreadyCollected = ccollected.some(
-              (c) => c.x === cx && c.y === cy,
-            );
-            if (!alreadyCollected) {
-              ccollected.push({ x: cx, y: cy });
-              addStep(block.id, "COLLECT", { callerId: currentCallerId });
-            }
-          }
+              // Energy core collection
+              const coreIndex = lvl.cores.findIndex(
+                (c) => c.x === cx && c.y === cy,
+              );
+              if (coreIndex !== -1) {
+                const alreadyCollected = ccollected.some(
+                  (c) => c.x === cx && c.y === cy,
+                );
+                if (!alreadyCollected) {
+                  ccollected.push({ x: cx, y: cy });
+                  addStep(block.id, "COLLECT", { callerId: currentCallerId });
+                }
+              }
 
-          // Portal reach check
-          if (cx === lvl.portalPos.x && cy === lvl.portalPos.y) {
-            if (ccollected.length === lvl.cores.length) {
-              won = true;
-              addStep(block.id, "PORTAL_WIN", { callerId: currentCallerId, isWin: true });
-              return;
+              // Portal reach check
+              if (cx === lvl.portalPos.x && cy === lvl.portalPos.y) {
+                if (ccollected.length === lvl.cores.length) {
+                  won = true;
+                  addStep(block.id, "PORTAL_WIN", { callerId: currentCallerId, isWin: true });
+                  return;
+                }
+              }
             }
           }
         } else if (block.type === "TURN_LEFT") {
@@ -1472,7 +1463,7 @@ const RoboCodeNeon: React.FC = () => {
           const count = block.repeatCount || 2;
           const inner = block.nestedCommands || [];
           for (let i = 0; i < count; i++) {
-            if (hitObstacle || won) return;
+            if (won) return;
             runBlocks(inner, depth + 1, currentCallerId || block.id);
           }
         } else if (block.type === "RANDOM") {
@@ -1496,7 +1487,7 @@ const RoboCodeNeon: React.FC = () => {
     runBlocks(blocks);
 
     // End failure fallback if we did not reach portal in victory state
-    if (!hitObstacle && !won) {
+    if (!won) {
       if (
         cx === lvl.portalPos.x &&
         cy === lvl.portalPos.y &&
@@ -1817,8 +1808,8 @@ const RoboCodeNeon: React.FC = () => {
         playSynth("teleport");
       } else if (nextStep.type === "BONK") {
         playSynth("bonk");
-        setFeedback("COLLISION! 💥");
-        setIsPlaying(false);
+        setFeedback("ERROR! ⚠️");
+        setTimeout(() => setFeedback(null), 1000);
       } else if (nextStep.type === "FAIL") {
         playSynth("bonk");
         setFeedback("GOAL NOT REACHED ❌");

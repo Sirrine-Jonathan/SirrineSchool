@@ -23,13 +23,23 @@ import {
   ArrowUp,
   RefreshCw,
   RefreshCcw,
+  Cpu,
+  HelpCircle,
 } from "lucide-react";
 
 import GameContainer from "../../components/GameContainer";
 import { useUser } from "../../hooks/useUser";
 
 // --- TYPES ---
-type BlockType = "FORWARD" | "TURN_LEFT" | "TURN_RIGHT" | "REPEAT";
+type BlockType =
+  | "FORWARD"
+  | "TURN_LEFT"
+  | "TURN_RIGHT"
+  | "REPEAT"
+  | "RANDOM"
+  | "CALL_FUNC_1"
+  | "CALL_FUNC_2"
+  | "CALL_FUNC_3";
 
 interface CommandBlock {
   id: string;
@@ -57,6 +67,7 @@ interface Level {
 
 interface TraceStep {
   blockId: string;
+  callerId?: string;
   type:
     | "START"
     | "FORWARD"
@@ -417,11 +428,140 @@ const WorkspaceSplit = styled.div`
 `;
 
 const ToolboxSection = styled.div`
-  width: 90px;
+  width: 95px;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
   flex-shrink: 0;
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 4px;
+
+  /* Custom micro-scrollbar */
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(144, 0, 255, 0.4);
+    border-radius: 2px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(144, 0, 255, 0.8);
+  }
+`;
+
+const FunctionToolboxGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(144, 0, 255, 0.2);
+  padding-top: 0.5rem;
+  width: 100%;
+`;
+
+const FunctionToolboxTitle = styled.div`
+  font-size: 0.6rem;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 0 0.1rem;
+`;
+
+const FunctionToolboxCard = styled.div<{ $active: boolean }>`
+  background: ${props => props.$active ? 'rgba(255, 170, 0, 0.1)' : 'rgba(15, 8, 38, 0.5)'};
+  border: 1px solid ${props => props.$active ? '#ffaa00' : 'rgba(144, 0, 255, 0.2)'};
+  border-radius: 6px;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: ${props => props.$active ? '0 0 8px rgba(255, 170, 0, 0.2)' : 'none'};
+  transition: all 0.2s ease;
+`;
+
+const FunctionInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  color: #fff;
+  font-weight: bold;
+`;
+
+const FunctionStepBadge = styled.span`
+  background: rgba(144, 0, 255, 0.3);
+  color: #d8b4fe;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.55rem;
+`;
+
+const FunctionActions = styled.div`
+  display: flex;
+  gap: 0.25rem;
+`;
+
+const FunctionActBtn = styled.button<{ $variant?: 'edit' | 'use' }>`
+  flex: 1;
+  background: ${props => props.$variant === 'edit' ? 'rgba(255, 170, 0, 0.15)' : 'rgba(144, 0, 255, 0.15)'};
+  border: 1px solid ${props => props.$variant === 'edit' ? '#ffaa00' : '#9000ff'};
+  color: ${props => props.$variant === 'edit' ? '#ffaa00' : '#d8b4fe'};
+  font-size: 0.55rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: ${props => props.$variant === 'edit' ? '#ffaa00' : '#9000ff'};
+    color: #110826;
+  }
+  
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`;
+
+const ActiveFunctionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 170, 0, 0.15);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #ffaa00;
+  box-shadow: 0 0 8px rgba(255, 170, 0, 0.1);
+`;
+
+const CloseFuncBtn = styled.button`
+  background: #ffaa00;
+  border: none;
+  color: #110826;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.15s ease;
+  
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 const ProgramSection = styled.div`
@@ -1054,6 +1194,16 @@ const RoboCodeNeon: React.FC = () => {
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
   const [program, setProgram] = useState<CommandBlock[]>([]);
   const [activeFunctionId, setActiveFunctionId] = useState<string | null>(null);
+  const [customFunctions, setCustomFunctions] = useState<{
+    func1: CommandBlock[];
+    func2: CommandBlock[];
+    func3: CommandBlock[];
+  }>({
+    func1: [],
+    func2: [],
+    func3: [],
+  });
+  const [activeCustomFuncId, setActiveCustomFuncId] = useState<"func1" | "func2" | "func3" | null>(null);
 
   // Execution states
   const [trace, setTrace] = useState<TraceStep[]>([]);
@@ -1083,8 +1233,13 @@ const RoboCodeNeon: React.FC = () => {
         return acc + 1;
       }, 0);
     };
-    return countBlocks(program);
-  }, [program]);
+    return (
+      countBlocks(program) +
+      countBlocks(customFunctions.func1) +
+      countBlocks(customFunctions.func2) +
+      countBlocks(customFunctions.func3)
+    );
+  }, [program, customFunctions]);
 
   // Scroll moves area to the bottom when a new block is added/programmed
   useEffect(() => {
@@ -1220,11 +1375,13 @@ const RoboCodeNeon: React.FC = () => {
       collectedCores: [],
     });
 
-    const runBlocks = (blockList: CommandBlock[], depth = 0) => {
-      if (steps.length > 500 || hitObstacle || won) return;
+    const runBlocks = (blockList: CommandBlock[], depth = 0, callerId?: string) => {
+      if (depth > 50 || steps.length > 500 || hitObstacle || won) return;
 
       for (const block of blockList) {
         if (hitObstacle || won) return;
+
+        const currentCallerId = callerId || (block.type.startsWith("CALL_FUNC_") ? block.id : undefined);
 
         if (block.type === "FORWARD") {
           let dx = 0;
@@ -1243,7 +1400,7 @@ const RoboCodeNeon: React.FC = () => {
             cx = nx;
             cy = ny;
             hitObstacle = true;
-            addStep(block.id, "BONK", { errorMessage: "OUT OF BOUNDS!" });
+            addStep(block.id, "BONK", { callerId: currentCallerId, errorMessage: "OUT OF BOUNDS!" });
             return;
           }
 
@@ -1254,6 +1411,7 @@ const RoboCodeNeon: React.FC = () => {
             cy = ny;
             hitObstacle = true;
             addStep(block.id, "BONK", {
+              callerId: currentCallerId,
               errorMessage: "LASER BLOCK DETECTED!",
             });
             return;
@@ -1261,22 +1419,22 @@ const RoboCodeNeon: React.FC = () => {
 
           cx = nx;
           cy = ny;
-          addStep(block.id, "FORWARD");
+          addStep(block.id, "FORWARD", { callerId: currentCallerId });
 
           // Teleporter warp check
           if (lvl.teleporters) {
             for (const tp of lvl.teleporters) {
               if (cx === tp.from.x && cy === tp.from.y) {
-                addStep(block.id, "TELEPORT_IN");
+                addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
                 cx = tp.to.x;
                 cy = tp.to.y;
-                addStep(block.id, "TELEPORT_OUT");
+                addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
                 break;
               } else if (cx === tp.to.x && cy === tp.to.y) {
-                addStep(block.id, "TELEPORT_IN");
+                addStep(block.id, "TELEPORT_IN", { callerId: currentCallerId });
                 cx = tp.from.x;
                 cy = tp.from.y;
-                addStep(block.id, "TELEPORT_OUT");
+                addStep(block.id, "TELEPORT_OUT", { callerId: currentCallerId });
                 break;
               }
             }
@@ -1292,7 +1450,7 @@ const RoboCodeNeon: React.FC = () => {
             );
             if (!alreadyCollected) {
               ccollected.push({ x: cx, y: cy });
-              addStep(block.id, "COLLECT");
+              addStep(block.id, "COLLECT", { callerId: currentCallerId });
             }
           }
 
@@ -1300,23 +1458,37 @@ const RoboCodeNeon: React.FC = () => {
           if (cx === lvl.portalPos.x && cy === lvl.portalPos.y) {
             if (ccollected.length === lvl.cores.length) {
               won = true;
-              addStep(block.id, "PORTAL_WIN", { isWin: true });
+              addStep(block.id, "PORTAL_WIN", { callerId: currentCallerId, isWin: true });
               return;
             }
           }
         } else if (block.type === "TURN_LEFT") {
           cheading -= 90;
-          addStep(block.id, "TURN_LEFT");
+          addStep(block.id, "TURN_LEFT", { callerId: currentCallerId });
         } else if (block.type === "TURN_RIGHT") {
           cheading += 90;
-          addStep(block.id, "TURN_RIGHT");
+          addStep(block.id, "TURN_RIGHT", { callerId: currentCallerId });
         } else if (block.type === "REPEAT") {
           const count = block.repeatCount || 2;
           const inner = block.nestedCommands || [];
           for (let i = 0; i < count; i++) {
             if (hitObstacle || won) return;
-            runBlocks(inner, depth + 1);
+            runBlocks(inner, depth + 1, currentCallerId || block.id);
           }
+        } else if (block.type === "RANDOM") {
+          const moves: CommandBlock["type"][] = ["FORWARD", "TURN_LEFT", "TURN_RIGHT"];
+          const pickedMove = moves[Math.floor(Math.random() * 3)];
+          const tempBlock: CommandBlock = {
+            id: block.id,
+            type: pickedMove,
+          };
+          runBlocks([tempBlock], depth, currentCallerId);
+        } else if (block.type === "CALL_FUNC_1") {
+          runBlocks(customFunctions.func1, depth + 1, currentCallerId);
+        } else if (block.type === "CALL_FUNC_2") {
+          runBlocks(customFunctions.func2, depth + 1, currentCallerId);
+        } else if (block.type === "CALL_FUNC_3") {
+          runBlocks(customFunctions.func3, depth + 1, currentCallerId);
         }
       }
     };
@@ -1342,14 +1514,14 @@ const RoboCodeNeon: React.FC = () => {
     return steps;
   };
 
-  // Re-generate trace whenever program changes or level changes
+  // Re-generate trace whenever program changes, level changes, or custom functions change
   useEffect(() => {
     const t = compileTrace(program, currentLevel);
     setTrace(t);
     setTraceIndex(0);
     setIsPlaying(false);
     setFeedback(null);
-  }, [program, currentLevel]);
+  }, [program, currentLevel, customFunctions]);
 
   // Loop execution timer
   useEffect(() => {
@@ -1390,20 +1562,40 @@ const RoboCodeNeon: React.FC = () => {
         e.preventDefault();
         if (isPlaying) return;
         if (activeFunctionId) {
-          const activeBlock = program.find((b) => b.id === activeFunctionId);
+          const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
+          const findBlock = (list: CommandBlock[]): CommandBlock | undefined => {
+            for (const b of list) {
+              if (b.id === activeFunctionId) return b;
+              if (b.nestedCommands) {
+                const res = findBlock(b.nestedCommands);
+                if (res) return res;
+              }
+            }
+            return undefined;
+          };
+          const activeBlock = findBlock(activeList);
+
           if (
             activeBlock &&
             activeBlock.type === "REPEAT" &&
             (!activeBlock.nestedCommands ||
               activeBlock.nestedCommands.length === 0)
           ) {
-            // Empty function block - delete it on exit
-            setProgram((prev) => prev.filter((b) => b.id !== activeFunctionId));
+            // Empty loop block - delete it on exit
+            if (activeCustomFuncId) {
+              setCustomFunctions((prev) => ({
+                ...prev,
+                [activeCustomFuncId]: deleteBlockInList(prev[activeCustomFuncId], activeFunctionId),
+              }));
+            } else {
+              setProgram((prev) => deleteBlockInList(prev, activeFunctionId));
+            }
           }
           setActiveFunctionId(null);
           playSynth("click");
         } else {
-          const lastBlock = program[program.length - 1];
+          const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
+          const lastBlock = activeList[activeList.length - 1];
           if (lastBlock && lastBlock.type === "REPEAT") {
             setActiveFunctionId(lastBlock.id);
             playSynth("click");
@@ -1414,7 +1606,14 @@ const RoboCodeNeon: React.FC = () => {
               repeatCount: 3,
               nestedCommands: [],
             };
-            setProgram((prev) => [...prev, newBlock]);
+            if (activeCustomFuncId) {
+              setCustomFunctions((prev) => ({
+                ...prev,
+                [activeCustomFuncId]: [...prev[activeCustomFuncId], newBlock],
+              }));
+            } else {
+              setProgram((prev) => [...prev, newBlock]);
+            }
             setActiveFunctionId(newBlock.id);
             playSynth("click");
           }
@@ -1426,15 +1625,28 @@ const RoboCodeNeon: React.FC = () => {
         e.preventDefault();
         if (isPlaying) return;
         const num = parseInt(e.key);
-        setProgram((prev) =>
-          prev.map((block) => {
-            if (block.id === activeFunctionId && block.type === "REPEAT") {
-              playSynth("click");
-              return { ...block, repeatCount: num };
-            }
-            return block;
-          }),
-        );
+        if (activeCustomFuncId) {
+          setCustomFunctions((prev) => ({
+            ...prev,
+            [activeCustomFuncId]: prev[activeCustomFuncId].map((block) => {
+              if (block.id === activeFunctionId && block.type === "REPEAT") {
+                playSynth("click");
+                return { ...block, repeatCount: num };
+              }
+              return block;
+            }),
+          }));
+        } else {
+          setProgram((prev) =>
+            prev.map((block) => {
+              if (block.id === activeFunctionId && block.type === "REPEAT") {
+                playSynth("click");
+                return { ...block, repeatCount: num };
+              }
+              return block;
+            }),
+          );
+        }
         return;
       }
 
@@ -1452,33 +1664,100 @@ const RoboCodeNeon: React.FC = () => {
       } else if (e.key === "Backspace") {
         e.preventDefault();
 
+        // 1. We are editing a nested Repeat Loop block
         if (activeFunctionId) {
-          const activeBlock = program.find((b) => b.id === activeFunctionId);
+          const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
+          const findBlock = (list: CommandBlock[]): CommandBlock | undefined => {
+            for (const b of list) {
+              if (b.id === activeFunctionId) return b;
+              if (b.nestedCommands) {
+                const res = findBlock(b.nestedCommands);
+                if (res) return res;
+              }
+            }
+            return undefined;
+          };
+          const activeBlock = findBlock(activeList);
+
           if (activeBlock && activeBlock.type === "REPEAT") {
             const nested = activeBlock.nestedCommands || [];
             if (nested.length > 0) {
               const updatedNested = nested.slice(0, -1);
               playSynth("click");
-              setProgram((prev) =>
-                prev.map((b) =>
-                  b.id === activeFunctionId
-                    ? { ...b, nestedCommands: updatedNested }
-                    : b,
-                ),
-              );
+              
+              const updateNestedInList = (list: CommandBlock[]): CommandBlock[] => {
+                return list.map((b) => {
+                  if (b.id === activeFunctionId) {
+                    return { ...b, nestedCommands: updatedNested };
+                  }
+                  if (b.nestedCommands) {
+                    return { ...b, nestedCommands: updateNestedInList(b.nestedCommands) };
+                  }
+                  return b;
+                });
+              };
+
+              if (activeCustomFuncId) {
+                setCustomFunctions((prev) => ({
+                  ...prev,
+                  [activeCustomFuncId]: updateNestedInList(prev[activeCustomFuncId]),
+                }));
+              } else {
+                setProgram((prev) => updateNestedInList(prev));
+              }
             } else {
               setActiveFunctionId(null);
               playSynth("click");
-              // Remove the empty REPEAT block on exit
-              setProgram((prev) => prev.filter((b) => b.id !== activeBlock.id));
+              if (activeCustomFuncId) {
+                setCustomFunctions((prev) => ({
+                  ...prev,
+                  [activeCustomFuncId]: deleteBlockInList(prev[activeCustomFuncId], activeBlock.id),
+                }));
+              } else {
+                setProgram((prev) => deleteBlockInList(prev, activeBlock.id));
+              }
             }
           } else {
-            // Active block does not exist anymore. Heal state!
             setActiveFunctionId(null);
           }
           return;
         }
 
+        // 2. We are editing a Custom Function directly
+        if (activeCustomFuncId) {
+          const list = customFunctions[activeCustomFuncId];
+          if (list.length > 0) {
+            const lastBlock = list[list.length - 1];
+            if (lastBlock.type === "REPEAT") {
+              setActiveFunctionId(lastBlock.id);
+              const updatedNested = (lastBlock.nestedCommands || []).slice(0, -1);
+              
+              const updateLastLoop = (arr: CommandBlock[]): CommandBlock[] => {
+                const copy = [...arr];
+                copy[copy.length - 1] = { ...lastBlock, nestedCommands: updatedNested };
+                return copy;
+              };
+
+              setCustomFunctions((prev) => ({
+                ...prev,
+                [activeCustomFuncId]: updateLastLoop(prev[activeCustomFuncId]),
+              }));
+              playSynth("click");
+            } else {
+              setCustomFunctions((prev) => ({
+                ...prev,
+                [activeCustomFuncId]: prev[activeCustomFuncId].slice(0, -1),
+              }));
+              playSynth("click");
+            }
+          } else {
+            setActiveCustomFuncId(null);
+            playSynth("click");
+          }
+          return;
+        }
+
+        // 3. We are editing the Main Program
         setProgram((prev) => {
           if (prev.length === 0) return prev;
 
@@ -1488,7 +1767,6 @@ const RoboCodeNeon: React.FC = () => {
               lastBlock.nestedCommands &&
               lastBlock.nestedCommands.length > 0
             ) {
-              // Backspacing into a function - activate it (flashing) and delete last nested block
               setActiveFunctionId(lastBlock.id);
               const updatedNested = lastBlock.nestedCommands.slice(0, -1);
               const updatedList = [...prev];
@@ -1499,7 +1777,6 @@ const RoboCodeNeon: React.FC = () => {
               playSynth("click");
               return updatedList;
             } else {
-              // Empty function block - delete it
               playSynth("click");
               return prev.slice(0, -1);
             }
@@ -1513,7 +1790,7 @@ const RoboCodeNeon: React.FC = () => {
 
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [isPlaying, program, isWinModalOpen, traceIndex, trace, activeFunctionId]);
+  }, [isPlaying, program, isWinModalOpen, traceIndex, trace, activeFunctionId, activeCustomFuncId, customFunctions]);
 
   const handlePlayStep = () => {
     if (traceIndex < trace.length - 1) {
@@ -1605,20 +1882,129 @@ const RoboCodeNeon: React.FC = () => {
 
   // --- PROGRAM CODE BUILDER METHODS ---
   // Append action to bottom of program
-  const appendBlock = (type: BlockType) => {
-    const activeBlockExists =
-      activeFunctionId && program.some((b) => b.id === activeFunctionId);
-    if (!activeBlockExists && activeFunctionId) {
-      setActiveFunctionId(null);
+  // Helper to add a nested block inside a list of blocks
+  const addNestedBlockInList = (list: CommandBlock[], targetId: string, newBlock: CommandBlock): { list: CommandBlock[]; success: boolean } => {
+    let success = false;
+    const updated = list.map((block) => {
+      if (block.id === targetId && block.type === "REPEAT") {
+        success = true;
+        return {
+          ...block,
+          nestedCommands: [...(block.nestedCommands || []), newBlock],
+        };
+      } else if (block.nestedCommands && block.nestedCommands.length > 0) {
+        const res = addNestedBlockInList(block.nestedCommands, targetId, newBlock);
+        if (res.success) {
+          success = true;
+          return { ...block, nestedCommands: res.list };
+        }
+      }
+      return block;
+    });
+    return { list: updated, success };
+  };
+
+  // Helper to delete a block inside a list of blocks
+  const deleteBlockInList = (list: CommandBlock[], targetId: string): CommandBlock[] => {
+    return list
+      .filter((block) => block.id !== targetId)
+      .map((block) => {
+        if (block.nestedCommands && block.nestedCommands.length > 0) {
+          return {
+            ...block,
+            nestedCommands: deleteBlockInList(block.nestedCommands, targetId),
+          };
+        }
+        return block;
+      });
+  };
+
+  // Helper to change repeat count inside a list of blocks
+  const changeRepeatCountInList = (list: CommandBlock[], targetId: string, delta: number): { list: CommandBlock[]; success: boolean } => {
+    let success = false;
+    const updated = list.map((block) => {
+      if (block.id === targetId && block.type === "REPEAT") {
+        const current = block.repeatCount || 2;
+        const nextVal = Math.max(1, Math.min(9, current + delta));
+        success = true;
+        return { ...block, repeatCount: nextVal };
+      } else if (block.nestedCommands && block.nestedCommands.length > 0) {
+        const res = changeRepeatCountInList(block.nestedCommands, targetId, delta);
+        if (res.success) {
+          success = true;
+          return { ...block, nestedCommands: res.list };
+        }
+      }
+      return block;
+    });
+    return { list: updated, success };
+  };
+
+  // Helper to move a block inside a list of blocks
+  const moveBlockInList = (list: CommandBlock[], targetId: string, direction: "up" | "down"): { list: CommandBlock[]; success: boolean } => {
+    const idx = list.findIndex((b) => b.id === targetId);
+    if (idx !== -1) {
+      const newList = [...list];
+      if (direction === "up" && idx > 0) {
+        const temp = newList[idx];
+        newList[idx] = newList[idx - 1];
+        newList[idx - 1] = temp;
+        return { list: newList, success: true };
+      } else if (direction === "down" && idx < list.length - 1) {
+        const temp = newList[idx];
+        newList[idx] = newList[idx + 1];
+        newList[idx + 1] = temp;
+        return { list: newList, success: true };
+      }
+      return { list, success: false };
     }
 
-    if (activeBlockExists && activeFunctionId) {
+    let success = false;
+    const updated = list.map((block) => {
+      if (block.nestedCommands && block.nestedCommands.length > 0) {
+        const res = moveBlockInList(block.nestedCommands, targetId, direction);
+        if (res.success) {
+          success = true;
+          return { ...block, nestedCommands: res.list };
+        }
+      }
+      return block;
+    });
+    return { list: updated, success };
+  };
+
+  // --- PROGRAM CODE BUILDER METHODS ---
+  // Append action to bottom of active context (program or active custom function)
+  const appendBlock = (type: BlockType) => {
+    if (isPlaying) return;
+
+    // Check if loop editing is active
+    if (activeFunctionId) {
       if (type === "REPEAT") {
         setActiveFunctionId(null);
         playSynth("click");
         return;
       }
-      appendNestedBlock(activeFunctionId, type);
+
+      const newBlock: CommandBlock = {
+        id: Math.random().toString(36).substr(2, 9),
+        type,
+      };
+
+      if (activeCustomFuncId) {
+        setCustomFunctions((prev) => {
+          const list = prev[activeCustomFuncId];
+          const res = addNestedBlockInList(list, activeFunctionId, newBlock);
+          return { ...prev, [activeCustomFuncId]: res.list };
+        });
+      } else {
+        setProgram((prev) => {
+          const res = addNestedBlockInList(prev, activeFunctionId, newBlock);
+          return res.list;
+        });
+      }
+
+      playSynth("click");
       return;
     }
 
@@ -1627,109 +2013,101 @@ const RoboCodeNeon: React.FC = () => {
       type,
       ...(type === "REPEAT" ? { repeatCount: 3, nestedCommands: [] } : {}),
     };
-    setProgram((prev) => [...prev, newBlock]);
-    if (type === "REPEAT") {
-      setActiveFunctionId(newBlock.id);
+
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => ({
+        ...prev,
+        [activeCustomFuncId]: [...prev[activeCustomFuncId], newBlock],
+      }));
+      if (type === "REPEAT") {
+        setActiveFunctionId(newBlock.id);
+      }
+    } else {
+      setProgram((prev) => [...prev, newBlock]);
+      if (type === "REPEAT") {
+        setActiveFunctionId(newBlock.id);
+      }
     }
     playSynth("click");
   };
 
   // Insert action inside repeat loop
   const appendNestedBlock = (loopId: string, type: BlockType) => {
-    setProgram((prev) =>
-      prev.map((block) => {
-        if (block.id === loopId && block.type === "REPEAT") {
-          const newNested: CommandBlock = {
-            id: Math.random().toString(36).substr(2, 9),
-            type,
-          };
-          return {
-            ...block,
-            nestedCommands: [...(block.nestedCommands || []), newNested],
-          };
-        }
-        return block;
-      }),
-    );
+    if (isPlaying) return;
+    const newBlock: CommandBlock = {
+      id: Math.random().toString(36).substr(2, 9),
+      type,
+      ...(type === "REPEAT" ? { repeatCount: 3, nestedCommands: [] } : {}),
+    };
+
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => {
+        const list = prev[activeCustomFuncId];
+        const res = addNestedBlockInList(list, loopId, newBlock);
+        return { ...prev, [activeCustomFuncId]: res.list };
+      });
+    } else {
+      setProgram((prev) => {
+        const res = addNestedBlockInList(prev, loopId, newBlock);
+        return res.list;
+      });
+    }
+
+    if (type === "REPEAT") {
+      setActiveFunctionId(newBlock.id);
+    }
     playSynth("click");
   };
 
   // Delete instruction block
-  const deleteBlock = (id: string, parentLoopId?: string) => {
+  const deleteBlock = (id: string) => {
+    if (isPlaying) return;
     if (id === activeFunctionId) {
       setActiveFunctionId(null);
     }
-    if (parentLoopId) {
-      setProgram((prev) =>
-        prev.map((block) => {
-          if (block.id === parentLoopId && block.type === "REPEAT") {
-            return {
-              ...block,
-              nestedCommands: (block.nestedCommands || []).filter(
-                (nb) => nb.id !== id,
-              ),
-            };
-          }
-          return block;
-        }),
-      );
+
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => ({
+        ...prev,
+        [activeCustomFuncId]: deleteBlockInList(prev[activeCustomFuncId], id),
+      }));
     } else {
-      setProgram((prev) => prev.filter((b) => b.id !== id));
+      setProgram((prev) => deleteBlockInList(prev, id));
     }
     playSynth("click");
   };
 
   // Update repeat loop factor
   const changeRepeatCount = (loopId: string, delta: number) => {
-    setProgram((prev) =>
-      prev.map((block) => {
-        if (block.id === loopId && block.type === "REPEAT") {
-          const current = block.repeatCount || 3;
-          const next = Math.max(2, Math.min(8, current + delta));
-          return { ...block, repeatCount: next };
-        }
-        return block;
-      }),
-    );
+    if (isPlaying) return;
+
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => {
+        const res = changeRepeatCountInList(prev[activeCustomFuncId], loopId, delta);
+        return { ...prev, [activeCustomFuncId]: res.list };
+      });
+    } else {
+      setProgram((prev) => {
+        const res = changeRepeatCountInList(prev, loopId, delta);
+        return res.list;
+      });
+    }
     playSynth("click");
   };
 
   // Rearrange order of instructions
-  const moveBlock = (
-    id: string,
-    direction: "up" | "down",
-    parentLoopId?: string,
-  ) => {
-    if (parentLoopId) {
-      setProgram((prev) =>
-        prev.map((block) => {
-          if (block.id === parentLoopId && block.type === "REPEAT") {
-            const list = [...(block.nestedCommands || [])];
-            const idx = list.findIndex((b) => b.id === id);
-            if (idx === -1) return block;
-            const nextIdx = direction === "up" ? idx - 1 : idx + 1;
-            if (nextIdx < 0 || nextIdx >= list.length) return block;
-            // Swap
-            const temp = list[idx];
-            list[idx] = list[nextIdx];
-            list[nextIdx] = temp;
-            return { ...block, nestedCommands: list };
-          }
-          return block;
-        }),
-      );
+  const moveBlock = (id: string, direction: "up" | "down") => {
+    if (isPlaying) return;
+
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => {
+        const res = moveBlockInList(prev[activeCustomFuncId], id, direction);
+        return { ...prev, [activeCustomFuncId]: res.list };
+      });
     } else {
       setProgram((prev) => {
-        const list = [...prev];
-        const idx = list.findIndex((b) => b.id === id);
-        if (idx === -1) return list;
-        const nextIdx = direction === "up" ? idx - 1 : idx + 1;
-        if (nextIdx < 0 || nextIdx >= list.length) return list;
-        // Swap
-        const temp = list[idx];
-        list[idx] = list[nextIdx];
-        list[nextIdx] = temp;
-        return list;
+        const res = moveBlockInList(prev, id, direction);
+        return res.list;
       });
     }
     playSynth("click");
@@ -1738,7 +2116,13 @@ const RoboCodeNeon: React.FC = () => {
   // Clean program
   const clearProgram = () => {
     setProgram([]);
+    setCustomFunctions({
+      func1: [],
+      func2: [],
+      func3: [],
+    });
     setActiveFunctionId(null);
+    setActiveCustomFuncId(null);
     playSynth("click");
   };
 
@@ -1776,6 +2160,13 @@ const RoboCodeNeon: React.FC = () => {
     return "";
   }, [traceIndex, trace]);
 
+  const currentStepCallerId = useMemo(() => {
+    if (traceIndex >= 0 && traceIndex < trace.length) {
+      return trace[traceIndex].callerId || "";
+    }
+    return "";
+  }, [traceIndex, trace]);
+
   // Current simulation state details
   const simState = useMemo(() => {
     if (traceIndex >= 0 && traceIndex < trace.length) {
@@ -1806,7 +2197,24 @@ const RoboCodeNeon: React.FC = () => {
     isNested = false,
     parentId?: string,
   ) => {
-    const isActivelyRunning = block.id === currentStepBlockId;
+    const isActivelyRunning = block.id === currentStepBlockId || block.id === currentStepCallerId;
+
+    const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
+
+    const getNestedLength = (list: CommandBlock[]): number => {
+      for (const b of list) {
+        if (b.id === parentId) return b.nestedCommands?.length || 0;
+        if (b.nestedCommands) {
+          const l = getNestedLength(b.nestedCommands);
+          if (l > 0) return l;
+        }
+      }
+      return 0;
+    };
+
+    const parentListLength = isNested
+      ? getNestedLength(activeList)
+      : activeList.length;
 
     // Choose block specific color accent
     let accentColor = "#00f0ff"; // FORWARD (Cyan)
@@ -1823,7 +2231,24 @@ const RoboCodeNeon: React.FC = () => {
       Icon = RefreshCw;
     } else if (block.type === "REPEAT") {
       accentColor = "#ffd700"; // Repeat (Gold)
-      label = `FUNCTION (${block.repeatCount}x)`;
+      label = `FOR LOOP (${block.repeatCount}x)`;
+      Icon = Repeat;
+    } else if (block.type === "RANDOM") {
+      accentColor = "#00ff66"; // Random (Green)
+      label = "RANDOM 🎲";
+      Icon = HelpCircle;
+    } else if (block.type === "CALL_FUNC_1") {
+      accentColor = "#ffaa00"; // Function (Orange)
+      label = "CALL FUNC 1";
+      Icon = Cpu;
+    } else if (block.type === "CALL_FUNC_2") {
+      accentColor = "#ffaa00";
+      label = "CALL FUNC 2";
+      Icon = Cpu;
+    } else if (block.type === "CALL_FUNC_3") {
+      accentColor = "#ffaa00";
+      label = "CALL FUNC 3";
+      Icon = Cpu;
     }
 
     if (block.type === "REPEAT") {
@@ -1835,8 +2260,8 @@ const RoboCodeNeon: React.FC = () => {
             $active={isActivelyRunning}
             $isEditing={isEditing}
           >
-            <RefreshCw size={16} color={accentColor} />
-            <span>FUNCTION</span>
+            <Repeat size={16} color={accentColor} />
+            <span>FOR LOOP</span>
             <LoopCounter>
               <Minus
                 size={12}
@@ -1861,7 +2286,7 @@ const RoboCodeNeon: React.FC = () => {
               </ActionIconBtn>
               <ActionIconBtn
                 onClick={() => moveBlock(block.id, "down")}
-                disabled={index === program.length - 1}
+                disabled={index === parentListLength - 1}
               >
                 <ChevronDown size={16} />
               </ActionIconBtn>
@@ -1891,7 +2316,7 @@ const RoboCodeNeon: React.FC = () => {
                   }}
                 >
                   <Info size={12} style={{ stroke: "#ffd700" }} /> Press Arrow
-                  Keys (↑ / ← / →) to build function
+                  Keys (↑ / ← / →) to build loop
                 </div>
               )}
 
@@ -1921,10 +2346,6 @@ const RoboCodeNeon: React.FC = () => {
       );
     }
 
-    const parentListLength = isNested
-      ? program.find((p) => p.id === parentId)?.nestedCommands?.length || 0
-      : program.length;
-
     return (
       <BlockCard
         key={block.id}
@@ -1936,18 +2357,18 @@ const RoboCodeNeon: React.FC = () => {
 
         <BlockControls>
           <ActionIconBtn
-            onClick={() => moveBlock(block.id, "up", parentId)}
+            onClick={() => moveBlock(block.id, "up")}
             disabled={index === 0}
           >
             <ChevronUp size={16} />
           </ActionIconBtn>
           <ActionIconBtn
-            onClick={() => moveBlock(block.id, "down", parentId)}
+            onClick={() => moveBlock(block.id, "down")}
             disabled={index === parentListLength - 1}
           >
             <ChevronDown size={16} />
           </ActionIconBtn>
-          <ActionIconBtn onClick={() => deleteBlock(block.id, parentId)}>
+          <ActionIconBtn onClick={() => deleteBlock(block.id)}>
             <Trash2 size={16} />
           </ActionIconBtn>
         </BlockControls>
@@ -2367,19 +2788,145 @@ const RoboCodeNeon: React.FC = () => {
                   RIGHT
                 </ToolboxCard>
                 <ToolboxCard
+                  $color="#00ff66"
+                  onClick={() => appendBlock("RANDOM")}
+                  disabled={isPlaying}
+                >
+                  <HelpCircle size={16} />
+                  RANDOM
+                </ToolboxCard>
+                <ToolboxCard
                   $color="#ffd700"
                   onClick={() => appendBlock("REPEAT")}
                   disabled={isPlaying}
                 >
                   <Repeat size={16} />
-                  FUNCTION
+                  FOR LOOP
                 </ToolboxCard>
+
+                {/* --- CUSTOM FUNCTIONS --- */}
+                <FunctionToolboxGroup>
+                  <FunctionToolboxTitle>Functions</FunctionToolboxTitle>
+                  
+                  {/* Func 1 */}
+                  <FunctionToolboxCard $active={activeCustomFuncId === "func1"}>
+                    <FunctionInfo>
+                      <span>FUNC 1</span>
+                      <FunctionStepBadge>{customFunctions.func1.length} steps</FunctionStepBadge>
+                    </FunctionInfo>
+                    <FunctionActions>
+                      <FunctionActBtn
+                        $variant="use"
+                        onClick={() => appendBlock("CALL_FUNC_1")}
+                        disabled={isPlaying || activeCustomFuncId === "func1"}
+                      >
+                        + Add
+                      </FunctionActBtn>
+                      <FunctionActBtn
+                        $variant="edit"
+                        onClick={() => {
+                          if (activeCustomFuncId === "func1") {
+                            setActiveCustomFuncId(null);
+                            setActiveFunctionId(null);
+                          } else {
+                            setActiveCustomFuncId("func1");
+                            setActiveFunctionId(null);
+                          }
+                        }}
+                        disabled={isPlaying}
+                      >
+                        {activeCustomFuncId === "func1" ? "Close" : "Edit"}
+                      </FunctionActBtn>
+                    </FunctionActions>
+                  </FunctionToolboxCard>
+
+                  {/* Func 2 */}
+                  <FunctionToolboxCard $active={activeCustomFuncId === "func2"}>
+                    <FunctionInfo>
+                      <span>FUNC 2</span>
+                      <FunctionStepBadge>{customFunctions.func2.length} steps</FunctionStepBadge>
+                    </FunctionInfo>
+                    <FunctionActions>
+                      <FunctionActBtn
+                        $variant="use"
+                        onClick={() => appendBlock("CALL_FUNC_2")}
+                        disabled={isPlaying || activeCustomFuncId === "func2"}
+                      >
+                        + Add
+                      </FunctionActBtn>
+                      <FunctionActBtn
+                        $variant="edit"
+                        onClick={() => {
+                          if (activeCustomFuncId === "func2") {
+                            setActiveCustomFuncId(null);
+                            setActiveFunctionId(null);
+                          } else {
+                            setActiveCustomFuncId("func2");
+                            setActiveFunctionId(null);
+                          }
+                        }}
+                        disabled={isPlaying}
+                      >
+                        {activeCustomFuncId === "func2" ? "Close" : "Edit"}
+                      </FunctionActBtn>
+                    </FunctionActions>
+                  </FunctionToolboxCard>
+
+                  {/* Func 3 */}
+                  <FunctionToolboxCard $active={activeCustomFuncId === "func3"}>
+                    <FunctionInfo>
+                      <span>FUNC 3</span>
+                      <FunctionStepBadge>{customFunctions.func3.length} steps</FunctionStepBadge>
+                    </FunctionInfo>
+                    <FunctionActions>
+                      <FunctionActBtn
+                        $variant="use"
+                        onClick={() => appendBlock("CALL_FUNC_3")}
+                        disabled={isPlaying || activeCustomFuncId === "func3"}
+                      >
+                        + Add
+                      </FunctionActBtn>
+                      <FunctionActBtn
+                        $variant="edit"
+                        onClick={() => {
+                          if (activeCustomFuncId === "func3") {
+                            setActiveCustomFuncId(null);
+                            setActiveFunctionId(null);
+                          } else {
+                            setActiveCustomFuncId("func3");
+                            setActiveFunctionId(null);
+                          }
+                        }}
+                        disabled={isPlaying}
+                      >
+                        {activeCustomFuncId === "func3" ? "Close" : "Edit"}
+                      </FunctionActBtn>
+                    </FunctionActions>
+                  </FunctionToolboxCard>
+                </FunctionToolboxGroup>
               </ToolboxSection>
 
               <ProgramSection ref={programSectionRef}>
-                {program.map((block, idx) => renderBlock(block, idx))}
+                {activeCustomFuncId && (
+                  <ActiveFunctionHeader>
+                    <span>EDITING: FUNCTION {activeCustomFuncId.replace("func", "")}</span>
+                    <CloseFuncBtn onClick={() => {
+                      setActiveCustomFuncId(null);
+                      setActiveFunctionId(null);
+                    }}>
+                      DONE EDITING
+                    </CloseFuncBtn>
+                  </ActiveFunctionHeader>
+                )}
 
-                {program.length === 0 && (
+                {activeCustomFuncId ? (
+                  customFunctions[activeCustomFuncId].map((block, idx) => renderBlock(block, idx))
+                ) : (
+                  program.map((block, idx) => renderBlock(block, idx))
+                )}
+
+                {((activeCustomFuncId && customFunctions[activeCustomFuncId].length === 0) ||
+                  (!activeCustomFuncId && program.length === 0)) && (
                   <div
                     style={{
                       flex: 1,
@@ -2394,13 +2941,19 @@ const RoboCodeNeon: React.FC = () => {
                     }}
                   >
                     <Zap size={24} />
-                    <div style={{ fontSize: "0.75rem" }}>
-                      No actions. Use Arrow Keys or tap buttons on left.
+                    <div style={{ fontSize: "0.75rem", fontWeight: "bold" }}>
+                      {activeCustomFuncId ? "FUNCTION IS EMPTY" : "NO CODE BLOCKS YET"}
+                    </div>
+                    <div style={{ fontSize: "0.65rem", maxWidth: "160px", opacity: 0.8 }}>
+                      {activeCustomFuncId 
+                        ? "Use the toolbox on the left to add actions to this custom function."
+                        : "Use Arrow Keys or tap buttons on left to program."}
                     </div>
                   </div>
                 )}
 
-                {program.length > 0 && !isPlaying && (
+                {((activeCustomFuncId && customFunctions[activeCustomFuncId].length > 0) ||
+                  (!activeCustomFuncId && program.length > 0)) && !isPlaying && (
                   <button
                     onClick={clearProgram}
                     style={{

@@ -39,7 +39,8 @@ type BlockType =
   | "RANDOM"
   | "CALL_FUNC_1"
   | "CALL_FUNC_2"
-  | "CALL_FUNC_3";
+  | "CALL_FUNC_3"
+  | "WHILE";
 
 interface CommandBlock {
   id: string;
@@ -1466,6 +1467,13 @@ const RoboCodeNeon: React.FC = () => {
             if (won) return;
             runBlocks(inner, depth + 1, currentCallerId || block.id);
           }
+        } else if (block.type === "WHILE") {
+          const inner = block.nestedCommands || [];
+          let iterations = 0;
+          while (!won && iterations < 100) {
+            iterations++;
+            runBlocks(inner, depth + 1, currentCallerId || block.id);
+          }
         } else if (block.type === "RANDOM") {
           const moves: CommandBlock["type"][] = ["FORWARD", "TURN_LEFT", "TURN_RIGHT"];
           const pickedMove = moves[Math.floor(Math.random() * 3)];
@@ -1568,7 +1576,7 @@ const RoboCodeNeon: React.FC = () => {
 
           if (
             activeBlock &&
-            activeBlock.type === "REPEAT" &&
+            (activeBlock.type === "REPEAT" || activeBlock.type === "WHILE") &&
             (!activeBlock.nestedCommands ||
               activeBlock.nestedCommands.length === 0)
           ) {
@@ -1587,7 +1595,7 @@ const RoboCodeNeon: React.FC = () => {
         } else {
           const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
           const lastBlock = activeList[activeList.length - 1];
-          if (lastBlock && lastBlock.type === "REPEAT") {
+          if (lastBlock && (lastBlock.type === "REPEAT" || lastBlock.type === "WHILE")) {
             setActiveFunctionId(lastBlock.id);
             playSynth("click");
           } else {
@@ -1655,7 +1663,7 @@ const RoboCodeNeon: React.FC = () => {
       } else if (e.key === "Backspace") {
         e.preventDefault();
 
-        // 1. We are editing a nested Repeat Loop block
+        // 1. We are editing a nested Repeat/While Loop block
         if (activeFunctionId) {
           const activeList = activeCustomFuncId ? customFunctions[activeCustomFuncId] : program;
           const findBlock = (list: CommandBlock[]): CommandBlock | undefined => {
@@ -1670,7 +1678,7 @@ const RoboCodeNeon: React.FC = () => {
           };
           const activeBlock = findBlock(activeList);
 
-          if (activeBlock && activeBlock.type === "REPEAT") {
+          if (activeBlock && (activeBlock.type === "REPEAT" || activeBlock.type === "WHILE")) {
             const nested = activeBlock.nestedCommands || [];
             if (nested.length > 0) {
               const updatedNested = nested.slice(0, -1);
@@ -1719,7 +1727,7 @@ const RoboCodeNeon: React.FC = () => {
           const list = customFunctions[activeCustomFuncId];
           if (list.length > 0) {
             const lastBlock = list[list.length - 1];
-            if (lastBlock.type === "REPEAT") {
+            if (lastBlock.type === "REPEAT" || lastBlock.type === "WHILE") {
               setActiveFunctionId(lastBlock.id);
               const updatedNested = (lastBlock.nestedCommands || []).slice(0, -1);
               
@@ -1753,7 +1761,7 @@ const RoboCodeNeon: React.FC = () => {
           if (prev.length === 0) return prev;
 
           const lastBlock = prev[prev.length - 1];
-          if (lastBlock.type === "REPEAT") {
+          if (lastBlock.type === "REPEAT" || lastBlock.type === "WHILE") {
             if (
               lastBlock.nestedCommands &&
               lastBlock.nestedCommands.length > 0
@@ -1877,7 +1885,7 @@ const RoboCodeNeon: React.FC = () => {
   const addNestedBlockInList = (list: CommandBlock[], targetId: string, newBlock: CommandBlock): { list: CommandBlock[]; success: boolean } => {
     let success = false;
     const updated = list.map((block) => {
-      if (block.id === targetId && block.type === "REPEAT") {
+      if (block.id === targetId && (block.type === "REPEAT" || block.type === "WHILE")) {
         success = true;
         return {
           ...block,
@@ -1971,7 +1979,7 @@ const RoboCodeNeon: React.FC = () => {
 
     // Check if loop editing is active
     if (activeFunctionId) {
-      if (type === "REPEAT") {
+      if (type === "REPEAT" || type === "WHILE") {
         setActiveFunctionId(null);
         playSynth("click");
         return;
@@ -2003,6 +2011,7 @@ const RoboCodeNeon: React.FC = () => {
       id: Math.random().toString(36).substr(2, 9),
       type,
       ...(type === "REPEAT" ? { repeatCount: 3, nestedCommands: [] } : {}),
+      ...(type === "WHILE" ? { nestedCommands: [] } : {}),
     };
 
     if (activeCustomFuncId) {
@@ -2010,12 +2019,12 @@ const RoboCodeNeon: React.FC = () => {
         ...prev,
         [activeCustomFuncId]: [...prev[activeCustomFuncId], newBlock],
       }));
-      if (type === "REPEAT") {
+      if (type === "REPEAT" || type === "WHILE") {
         setActiveFunctionId(newBlock.id);
       }
     } else {
       setProgram((prev) => [...prev, newBlock]);
-      if (type === "REPEAT") {
+      if (type === "REPEAT" || type === "WHILE") {
         setActiveFunctionId(newBlock.id);
       }
     }
@@ -2029,6 +2038,7 @@ const RoboCodeNeon: React.FC = () => {
       id: Math.random().toString(36).substr(2, 9),
       type,
       ...(type === "REPEAT" ? { repeatCount: 3, nestedCommands: [] } : {}),
+      ...(type === "WHILE" ? { nestedCommands: [] } : {}),
     };
 
     if (activeCustomFuncId) {
@@ -2044,7 +2054,7 @@ const RoboCodeNeon: React.FC = () => {
       });
     }
 
-    if (type === "REPEAT") {
+    if (type === "REPEAT" || type === "WHILE") {
       setActiveFunctionId(newBlock.id);
     }
     playSynth("click");
@@ -2237,6 +2247,10 @@ const RoboCodeNeon: React.FC = () => {
       accentColor = "#ffd700"; // Repeat (Gold)
       label = `FOR LOOP (${block.repeatCount}x)`;
       Icon = Repeat;
+    } else if (block.type === "WHILE") {
+      accentColor = "#ff00d4"; // While (Magenta)
+      label = "WHILE NOT GOAL";
+      Icon = Repeat;
     } else if (block.type === "RANDOM") {
       accentColor = "#00ff66"; // Random (Green)
       label = "RANDOM 🎲";
@@ -2255,7 +2269,7 @@ const RoboCodeNeon: React.FC = () => {
       Icon = Cpu;
     }
 
-    if (block.type === "REPEAT") {
+    if (block.type === "REPEAT" || block.type === "WHILE") {
       const isEditing = activeFunctionId === block.id;
       return (
         <div key={block.id}>
@@ -2265,21 +2279,23 @@ const RoboCodeNeon: React.FC = () => {
             $isEditing={isEditing}
           >
             <Repeat size={16} color={accentColor} />
-            <span>FOR LOOP</span>
-            <LoopCounter>
-              <Minus
-                size={12}
-                style={{ cursor: "pointer" }}
-                onClick={() => changeRepeatCount(block.id, -1)}
-              />
-              <span>{block.repeatCount}x</span>
-              <Plus
-                size={12}
-                style={{ cursor: "pointer" }}
-                onClick={() => changeRepeatCount(block.id, 1)}
-              />
-            </LoopCounter>
-            <span>RUNS</span>
+            <span>{block.type === "REPEAT" ? "FOR LOOP" : "WHILE LOOP"}</span>
+            {block.type === "REPEAT" && (
+              <LoopCounter>
+                <Minus
+                  size={12}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => changeRepeatCount(block.id, -1)}
+                />
+                <span>{block.repeatCount}x</span>
+                <Plus
+                  size={12}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => changeRepeatCount(block.id, 1)}
+                />
+              </LoopCounter>
+            )}
+            <span>{block.type === "REPEAT" ? "RUNS" : "UNTIL GOAL"}</span>
 
             <BlockControls>
               <ActionIconBtn
@@ -2829,6 +2845,14 @@ const RoboCodeNeon: React.FC = () => {
                 >
                   <Repeat size={16} />
                   FOR LOOP
+                </ToolboxCard>
+                <ToolboxCard
+                  $color="#ff00d4"
+                  onClick={() => appendBlock("WHILE")}
+                  disabled={isPlaying}
+                >
+                  <Repeat size={16} />
+                  WHILE LOOP
                 </ToolboxCard>
 
                 {/* --- CUSTOM FUNCTIONS --- */}

@@ -2106,6 +2106,20 @@ const RoboCodeNeon: React.FC = () => {
 
   // Clean program
   const clearProgram = () => {
+    if (isPlaying) return;
+    if (activeCustomFuncId) {
+      setCustomFunctions((prev) => ({
+        ...prev,
+        [activeCustomFuncId]: [],
+      }));
+    } else {
+      setProgram([]);
+    }
+    setActiveFunctionId(null);
+    playSynth("click");
+  };
+
+  const resetEverything = () => {
     setProgram([]);
     setCustomFunctions({
       func1: [],
@@ -2114,17 +2128,16 @@ const RoboCodeNeon: React.FC = () => {
     });
     setActiveFunctionId(null);
     setActiveCustomFuncId(null);
-    playSynth("click");
   };
 
   // Switch levels
   const changeLevel = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLevelIdx > 0) {
       setCurrentLevelIdx((prev) => prev - 1);
-      clearProgram();
+      resetEverything();
     } else if (direction === "next" && currentLevelIdx < LEVELS.length - 1) {
       setCurrentLevelIdx((prev) => prev + 1);
-      clearProgram();
+      resetEverything();
     }
     playSynth("click");
   };
@@ -2134,11 +2147,11 @@ const RoboCodeNeon: React.FC = () => {
     setIsWinModalOpen(false);
     if (currentLevelIdx < LEVELS.length - 1) {
       setCurrentLevelIdx((prev) => prev + 1);
-      clearProgram();
+      resetEverything();
     } else {
       // Loop back to Level 1
       setCurrentLevelIdx(0);
-      clearProgram();
+      resetEverything();
     }
   };
 
